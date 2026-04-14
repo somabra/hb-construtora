@@ -1,0 +1,54 @@
+---
+const cards = [
+  {
+    icon: 'assignment_ind',
+    title: 'Acompanhamento Pessoal',
+    desc: 'Gestão direta e próxima em todas as etapas da sua obra, garantindo que nada passe despercebido.',
+  },
+  {
+    icon: 'verified_user',
+    title: 'Zero Retrabalho',
+    desc: 'Processos rigorosos de qualidade para entregar resultados perfeitos na primeira vez.',
+  },
+  {
+    icon: 'vpn_key',
+    title: 'Do Projeto à Chave',
+    desc: 'Cuidamos de tudo: da concepção arquitetônica até a limpeza final para sua entrada.',
+  },
+  {
+    icon: 'location_on',
+    title: 'Sinop e Região',
+    desc: 'Especialistas no mercado local de Mato Grosso, com logística e fornecedores parceiros.',
+  },
+];
+---
+
+<section class="py-24 bg-surface">
+  <div class="max-w-7xl mx-auto px-8">
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mb-16">
+      {cards.map(card => (
+        <div class="bg-surface-container-low p-5 md:p-8 structural-shadow border-t-4 border-secondary transition-transform hover:-translate-y-2">
+          <div class="w-10 h-10 md:w-16 md:h-16 bg-[#ffdbcf] rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-secondary text-xl md:text-3xl">{card.icon}</span>
+          </div>
+          <h3 class="font-headline text-sm md:text-xl font-bold mb-2 md:mb-4 text-primary leading-tight">{card.title}</h3>
+          <p class="text-on-surface-variant text-xs md:text-sm leading-relaxed hidden md:block">{card.desc}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="text-center">
+      <a
+        href="https://wa.me/5566996752309"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-3 bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-8 py-4 font-bold uppercase tracking-widest text-sm hover:brightness-110 transition-all"
+      >
+        Fale com o Hemerson
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+  </div>
+</section>

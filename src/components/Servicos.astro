@@ -1,0 +1,67 @@
+---
+const servicos = [
+  {
+    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCxnNYR0rx4_GD_4NfAylmwuIjiEyNZaEjZAHM5517hT7clZycAkyvVwdu-YtG70aanNvY727CW9ZrPojMjO1CG5DiuS4dHEf2TJ2HI2c15UBUplA3NL92FUlbFetgKEPUWQUFHRvrLIgs8iNioAvNNKbJ5qATzkz-a0k8cZn2qDhVHOlfaImibFniiCWP_p701YoOIa7KX1OssmDzaRvWNUjBLQO-F-4LNCYOb4Wiv-ikmpeQbE80lgPGDrQi4rVIsE62w1cX1hVlm',
+    alt: 'Casa residencial moderna',
+    title: 'Residencial',
+    desc: 'Casas de alto padrão feitas sob medida para sua família.',
+  },
+  {
+    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA4X6bCeACxz3rc0F1D3XB2BZwudAXbr8UfNh56eCklfncnNnx6TJBCbc05j4a5R5RaoGo8VxIy4xUiWWF6C4iAphMiNAQEIcbajFKFpN8VkoqAKi0QDh956xjGw3XcAS3Ku1d9Nj0traurrOk3V0LJh4AqSzPJvBgfj5Cpjo9S79WR633wGhou2iGU_7AENbY-c2kyhiFXlyaJ_rllfkSTqlBOtC1TsOVdirOBO1TVaid33CvmJc7zXctHVGkf32rf2xtgyeKFJzSx',
+    alt: 'Prédio de kitnets',
+    title: 'Kitnets',
+    desc: 'Projetos rentáveis para investidores inteligentes.',
+  },
+  {
+    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuATK4wNo97crwuEie0WUqSN_13Xm6wRwyQgzCK_C9R_Vg15Mj_OHVxffV9m6M6CgllIGVuHv2PgOImFzDY6--R5odjPCBnmWGfrwW_kP3wVzNn3hTu4sBQwcq4Wza7YfLambY-Mvxse_7rebICd-JdjiKAkF88XcScJYc5s-tNHD8kL90Zf0MkynwEN3sega4bXHfiLJneGYRWdz4xNYPflK2UtBARKFeGD1vjKzyby_EjBIbBF50c6pWDkWS1j3kRgIly_u96QyA6y',
+    alt: 'Prédio comercial',
+    title: 'Prédios Comerciais',
+    desc: 'Estruturas robustas para negócios de sucesso.',
+  },
+  {
+    img: 'https://placehold.co/600x800/1a1a4e/ffffff?text=Barracão',
+    alt: 'Galpão industrial',
+    title: 'Barracões',
+    desc: 'Construções industriais otimizadas e duráveis.',
+  },
+];
+---
+
+<section id="servicos" class="py-24 bg-primary text-white">
+  <div class="max-w-7xl mx-auto px-8">
+
+    <div class="mb-16">
+      <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-4 block">O que fazemos</span>
+      <h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight">Soluções de Construção Inteligente</h2>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {servicos.map(s => (
+        <div class="group relative overflow-hidden aspect-[3/4] border border-white/10 hover:border-secondary/50 transition-colors">
+          <img
+            src={s.img}
+            alt={s.alt}
+            class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+          />
+          <div class="absolute inset-0 bg-primary/60 group-hover:bg-primary/20 transition-all"></div>
+          <div class="absolute bottom-0 left-0 p-4 md:p-8">
+            <h3 class="font-headline text-lg md:text-2xl font-bold mb-1 md:mb-2">{s.title}</h3>
+            <p class="text-white/60 text-xs md:text-sm transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+              {s.desc}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="text-center mt-12">
+      <a
+        href="#contato"
+        class="inline-block bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-10 py-4 font-bold uppercase tracking-widest text-sm hover:brightness-110 transition-all"
+      >
+        Solicitar Orçamento
+      </a>
+    </div>
+
+  </div>
+</section>

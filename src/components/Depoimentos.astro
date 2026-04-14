@@ -1,0 +1,123 @@
+---
+const depoimentos = [
+  {
+    texto: 'A HB Construtora superou todas as nossas expectativas. O Hemerson acompanhou cada detalhe e nos deu uma tranquilidade imensa durante todo o processo. Recomendo de olhos fechados!',
+    nome: 'Mariana Silva',
+    cargo: 'Proprietária em Sinop',
+    foto: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDE5LYWF2tR40uE-BtrLfDASUPvhT5UWNQR_ZgeKItqXOFd_0Oz2GUNdiUVnPgtutt2p1tLcs6h6vYoxILTR_yiuk3B8DfDxQegm3BBaUNso1xt-cbG-dAvJb0J5_e6vozVQJ5_hZlIVxkv24xT5Rx0zFgVf4QOfx5oqO6qbDuGlo2xuVMVCTjI1uhCLw1ILVGHGp7WI23v0iSJTfqFfLtc_EkHXdHfqvr4mZ-Gr3s5Z0CP_9a88qaYRNCly5bEgyXR-RYqbMRavMIT',
+  },
+  {
+    texto: 'Contratei o Hemerson para construir minhas kitnets e foi a melhor decisão. Entrega no prazo, qualidade impecável e comunicação transparente durante toda a obra.',
+    nome: 'Roberto Almeida',
+    cargo: 'Investidor Imobiliário',
+    foto: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDE5LYWF2tR40uE-BtrLfDASUPvhT5UWNQR_ZgeKItqXOFd_0Oz2GUNdiUVnPgtutt2p1tLcs6h6vYoxILTR_yiuk3B8DfDxQegm3BBaUNso1xt-cbG-dAvJb0J5_e6vozVQJ5_hZlIVxkv24xT5Rx0zFgVf4QOfx5oqO6qbDuGlo2xuVMVCTjI1uhCLw1ILVGHGp7WI23v0iSJTfqFfLtc_EkHXdHfqvr4mZ-Gr3s5Z0CP_9a88qaYRNCly5bEgyXR-RYqbMRavMIT',
+  },
+  {
+    texto: 'Profissionalismo do início ao fim. O galpão ficou exatamente como planejamos e o acompanhamento foi exemplar. Com certeza vou contratar novamente.',
+    nome: 'Carlos Mendes',
+    cargo: 'Empresário em Sinop',
+    foto: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDE5LYWF2tR40uE-BtrLfDASUPvhT5UWNQR_ZgeKItqXOFd_0Oz2GUNdiUVnPgtutt2p1tLcs6h6vYoxILTR_yiuk3B8DfDxQegm3BBaUNso1xt-cbG-dAvJb0J5_e6vozVQJ5_hZlIVxkv24xT5Rx0zFgVf4QOfx5oqO6qbDuGlo2xuVMVCTjI1uhCLw1ILVGHGp7WI23v0iSJTfqFfLtc_EkHXdHfqvr4mZ-Gr3s5Z0CP_9a88qaYRNCly5bEgyXR-RYqbMRavMIT',
+  },
+];
+---
+
+<section id="depoimentos" class="py-24 bg-surface">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+
+    <div class="text-center mb-14">
+      <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-4 block">Depoimentos</span>
+      <h2 class="font-headline text-3xl md:text-4xl font-bold text-primary">O que dizem nossos clientes</h2>
+      <div class="w-12 h-1 bg-secondary mx-auto mt-5"></div>
+    </div>
+
+    <!-- Desktop: grid 3 colunas -->
+    <div class="hidden md:grid grid-cols-3 gap-6">
+      {depoimentos.map(dep => (
+        <div class="bg-white rounded-2xl p-8 shadow-md flex flex-col items-center text-center">
+          <div class="w-16 h-16 rounded-full overflow-hidden ring-2 ring-[#e85d26] ring-offset-2 mb-3 flex-shrink-0">
+            <img src={dep.foto} alt={dep.nome} class="w-full h-full object-cover" />
+          </div>
+          <p class="font-bold text-primary text-sm">{dep.nome}</p>
+          <p class="text-xs text-on-surface-variant mb-5">{dep.cargo}</p>
+          <div class="flex gap-1 mb-4 justify-center">
+            {Array(5).fill(0).map(() => (
+              <svg class="w-4 h-4 text-[#e85d26]" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.363 1.118l1.287 3.957c.3.922-.755 1.688-1.54 1.118l-3.37-2.447a1 1 0 00-1.175 0l-3.37 2.447c-.784.57-1.838-.196-1.539-1.118l1.287-3.957a1 1 0 00-.363-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"/>
+              </svg>
+            ))}
+          </div>
+          <p class="text-on-surface-variant text-sm leading-relaxed">"{dep.texto}"</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Mobile: carrossel 1 por vez -->
+    <div class="md:hidden overflow-hidden">
+      <div id="dep-track" class="flex transition-transform duration-700 ease-in-out">
+        {depoimentos.map(dep => (
+          <div class="min-w-full shrink-0">
+            <div class="bg-white rounded-2xl p-7 shadow-md flex flex-col items-center text-center mx-1">
+              <div class="w-16 h-16 rounded-full overflow-hidden ring-2 ring-[#e85d26] ring-offset-2 mb-3 flex-shrink-0">
+                <img src={dep.foto} alt={dep.nome} class="w-full h-full object-cover" />
+              </div>
+              <p class="font-bold text-primary text-sm">{dep.nome}</p>
+              <p class="text-xs text-on-surface-variant mb-5">{dep.cargo}</p>
+              <div class="flex gap-1 mb-4 justify-center">
+                {Array(5).fill(0).map(() => (
+                  <svg class="w-4 h-4 text-[#e85d26]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.363 1.118l1.287 3.957c.3.922-.755 1.688-1.54 1.118l-3.37-2.447a1 1 0 00-1.175 0l-3.37 2.447c-.784.57-1.838-.196-1.539-1.118l1.287-3.957a1 1 0 00-.363-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"/>
+                  </svg>
+                ))}
+              </div>
+              <p class="text-on-surface-variant text-sm leading-relaxed">"{dep.texto}"</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="flex justify-center gap-2 mt-6" id="dep-dots">
+        {depoimentos.map((_, i) => (
+          <button
+            class={`h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-secondary w-8' : 'bg-primary/20 w-2'}`}
+            data-index={i}
+            aria-label={`Depoimento ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const track = document.getElementById('dep-track') as HTMLElement | null;
+  const dots  = document.querySelectorAll<HTMLButtonElement>('#dep-dots button');
+  if (!track || !dots.length) throw new Error('no track');
+
+  const total = dots.length;
+  let current = 0;
+
+  function goTo(i: number): void {
+    current = (i + total) % total;
+    track!.style.transform = `translateX(-${current * 100}%)`;
+    dots.forEach((d, idx) => {
+      d.classList.toggle('bg-secondary',   idx === current);
+      d.classList.toggle('w-8',            idx === current);
+      d.classList.toggle('bg-primary/20',  idx !== current);
+      d.classList.toggle('w-2',            idx !== current);
+    });
+  }
+
+  dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+
+  // Swipe
+  let sx = 0;
+  track.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend',   e => {
+    const dx = sx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) goTo(dx > 0 ? current + 1 : current - 1);
+  });
+
+  // Autoplay
+  setInterval(() => goTo(current + 1), 6000);
+</script>

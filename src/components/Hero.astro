@@ -1,0 +1,47 @@
+---
+---
+
+<section id="home">
+
+  <!-- Foto de capa com texto sobreposto -->
+  <div class="relative w-full overflow-hidden rounded-b-3xl" style="height: 65vh; min-height: 420px;">
+    <img
+      id="hero-parallax"
+      src="/hero-capa.png"
+      alt="Obra HB Construtora"
+      class="w-full object-cover absolute left-0 right-0"
+      style="height: 130%; top: -10%;"
+    />
+    <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+    <!-- Texto centralizado à esquerda -->
+    <div class="absolute inset-0 flex items-center pt-20">
+      <div class="max-w-7xl mx-auto px-16 w-full">
+        <div class="max-w-lg text-white">
+          <h1 class="font-headline text-4xl md:text-5xl font-semibold leading-snug tracking-tight mb-4">
+            O seu novo projeto<br/><strong class="font-bold">começa aqui.</strong>
+          </h1>
+          <p class="text-base text-white/75 mb-8 leading-relaxed">
+            Sua obra em Sinop começa quando você decide.
+          </p>
+          <a
+            href="#contato"
+            class="inline-block bg-[#e85d26] text-white px-7 py-3 text-sm font-medium hover:brightness-110 transition-all"
+          >
+            Solicitar Orçamento
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  const img = document.getElementById('hero-parallax') as HTMLImageElement;
+  window.addEventListener('scroll', () => {
+    const offset = window.scrollY * 0.35;
+    img.style.transform = `translateY(${offset}px)`;
+  }, { passive: true });
+</script>

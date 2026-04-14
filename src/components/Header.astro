@@ -1,0 +1,74 @@
+---
+const links = [
+  { href: '#home',        label: 'Home' },
+  { href: '#sobre',       label: 'Sobre' },
+  { href: '#servicos',    label: 'Serviços' },
+  { href: '#galeria',     label: 'Galeria' },
+  { href: '#depoimentos', label: 'Depoimentos' },
+  { href: '#contato',     label: 'Contato' },
+];
+---
+
+<nav class="fixed top-0 w-full z-50 bg-[#1a1a4e] shadow-[0_20px_40px_rgba(27,28,28,0.06)]">
+  <div class="flex justify-between items-center px-8 py-4 max-w-full">
+
+    <a href="#home">
+      <img src="/logo-hb.png" alt="HB Construtora" class="h-10 w-auto" />
+    </a>
+
+    <!-- Desktop nav -->
+    <div id="nav-links" class="hidden md:flex gap-8 items-center">
+      {links.map((link, i) => (
+        <a
+          href={link.href}
+          class={`font-headline font-bold uppercase tracking-wider text-[12px] transition-colors duration-300 ${
+            i === 0
+              ? 'text-[#e85d26] border-b-2 border-[#e85d26] pb-1'
+              : 'text-white/90 hover:text-[#e85d26]'
+          }`}
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="#contato"
+        class="bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-6 py-2 font-bold uppercase text-[12px] tracking-widest hover:brightness-110 transition-all"
+      >
+        Orçamento
+      </a>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button id="menu-btn" class="md:hidden text-white" aria-label="Menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="mobile-menu" class="hidden md:hidden bg-[#1a1a4e] border-t border-white/10">
+    <div class="flex flex-col px-8 py-6 gap-4">
+      {links.map(link => (
+        <a
+          href={link.href}
+          class="font-headline font-bold uppercase tracking-wider text-[13px] text-white/90 hover:text-[#e85d26] transition-colors py-1 border-b border-white/5"
+          onclick="document.getElementById('mobile-menu').classList.add('hidden')"
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="#contato"
+        class="bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-6 py-3 font-bold uppercase text-[12px] tracking-widest text-center hover:brightness-110 transition-all mt-2"
+        onclick="document.getElementById('mobile-menu').classList.add('hidden')"
+      >
+        Orçamento
+      </a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const btn   = document.getElementById('menu-btn')!;
+  const menu  = document.getElementById('mobile-menu')!;
+  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+</script>
