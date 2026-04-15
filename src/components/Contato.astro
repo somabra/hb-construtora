@@ -1,108 +1,152 @@
 ---
 ---
 
-<section id="contato" class="py-24 bg-surface-container-low">
-  <div class="max-w-7xl mx-auto px-5 md:px-8">
-    <div class="grid md:grid-cols-2 gap-10 md:gap-20">
+<style>
+  @keyframes palavraEntra {
+    from { opacity: 0; transform: translateX(-30px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .titulo-palavra {
+    display: inline-block;
+    opacity: 0;
+    animation: palavraEntra 0.35s ease forwards;
+    animation-delay: 0.2s;
+  }
+</style>
 
-      <!-- Info -->
+<div id="contato"></div>
+<section id="home" class="relative overflow-hidden rounded-b-3xl" style="min-height: 85svh; padding-top: 8rem; padding-bottom: 5rem;">
+
+  <!-- Fundo com foto -->
+  <div class="absolute inset-0 overflow-hidden">
+    <img id="contato-parallax" src="/contato-bg.jpg" alt="" class="w-full object-cover absolute left-0 right-0" style="height: 130%; top: -15%;" />
+    <div class="absolute inset-0 bg-[#020037]/70"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-5 md:px-8">
+    <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+
+      <!-- Esquerda: texto -->
       <div>
-        <h2 class="font-headline text-4xl font-bold text-primary mb-8">Vamos construir algo incrível juntos?</h2>
-        <p class="text-on-surface-variant mb-12">
-          Estamos prontos para ouvir sua ideia e transformar em um projeto sólido. Preencha o formulário ou entre em contato pelos nossos canais.
+        <span class="inline-flex items-center gap-2 border border-white/30 text-white/80 text-xs px-4 py-2 rounded-full mb-8">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#e85d26] flex-shrink-0"></span>
+          Tenha seu orçamento agora mesmo!
+        </span>
+        <h2 class="font-headline text-4xl md:text-5xl font-bold text-white uppercase leading-tight mb-6">
+          <span class="titulo-palavra">Solicite um</span>
+          <span class="titulo-palavra bg-gradient-to-r from-[#f0884a] to-[#d94e18] bg-clip-text text-transparent">Orçamento</span><br/>
+          <span class="titulo-palavra">Simplificado</span>
+          <span class="titulo-palavra">Gratuito</span>
+        </h2>
+        <p class="text-white/70 mb-4 leading-relaxed">
+          Trabalhamos com a entrega impecável de um <strong class="text-white">número limitado</strong> de obras por ano.
+        </p>
+        <p class="text-white/70 leading-relaxed">
+          Por isso, a elaboração de orçamentos é exclusiva para clientes que já possuem <strong class="text-white">terreno e projeto arquitetônico.</strong>
         </p>
 
-        <div class="space-y-8">
-          <div class="flex items-start gap-4">
-            <span class="material-symbols-outlined text-secondary">phone_iphone</span>
-            <div>
-              <p class="font-bold text-primary">Telefone / WhatsApp</p>
-              <a href="tel:+5566996752309" class="text-on-surface-variant hover:text-secondary transition-colors">
-                (66) 99675-2309
-              </a>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-4">
-            <span class="material-symbols-outlined text-secondary">location_on</span>
-            <div>
-              <p class="font-bold text-primary">Endereço</p>
-              <p class="text-on-surface-variant">Rua dos Angicos, 1494, Jardim Imperial — Sinop, MT</p>
-            </div>
-          </div>
-
-          <div class="flex gap-4 pt-2">
-            <a
-              href="https://instagram.com/hbconstrutoramt"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="w-10 h-10 border border-primary/20 flex items-center justify-center rounded-full hover:bg-secondary hover:text-white transition-all"
-              aria-label="Instagram"
-            >
-              <span class="material-symbols-outlined text-xl">camera_alt</span>
-            </a>
-            <a
-              href="https://wa.me/5566996752309"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="w-10 h-10 border border-primary/20 flex items-center justify-center rounded-full hover:bg-secondary hover:text-white transition-all"
-              aria-label="WhatsApp"
-            >
-              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-            </a>
-          </div>
+        <div class="flex gap-4 mt-10">
+          <a
+            href="tel:+5566996752309"
+            class="flex items-center gap-3 text-white/70 hover:text-white transition-colors text-sm"
+          >
+            <span class="material-symbols-outlined text-[#e85d26]">phone_iphone</span>
+            (66) 99675-2309
+          </a>
+          <a
+            href="https://wa.me/5566996752309"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-3 text-white/70 hover:text-white transition-colors text-sm"
+          >
+            <svg class="w-5 h-5 fill-[#e85d26]" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            WhatsApp
+          </a>
         </div>
       </div>
 
-      <!-- Formulário -->
-      <div class="bg-[#0f1f5c] p-6 md:p-10 rounded-2xl shadow-2xl">
-        <form id="lead-form" class="space-y-6">
-          <div>
-            <label class="block text-sm font-bold text-white mb-2 uppercase tracking-tighter">Nome Completo</label>
-            <input
-              name="nome"
-              type="text"
-              required
-              placeholder="Seu nome"
-              class="w-full bg-white/10 text-white placeholder-white/40 border border-white/20 rounded-xl focus:outline-none focus:border-[#4a90e2] p-4 transition-all"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-white mb-2 uppercase tracking-tighter">Telefone</label>
-            <input
-              name="telefone"
-              type="tel"
-              required
-              placeholder="(00) 00000-0000"
-              class="w-full bg-white/10 text-white placeholder-white/40 border border-white/20 rounded-xl focus:outline-none focus:border-[#4a90e2] p-4 transition-all"
-            />
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Direita: card glass -->
+      <div class="bg-[#0a1545]/80 backdrop-blur-md rounded-2xl p-8 md:p-10 border border-white/10 shadow-2xl">
+        <h3 class="font-headline text-3xl font-bold text-white mb-6">
+          Fale com o <span class="bg-gradient-to-r from-[#f0884a] to-[#d94e18] bg-clip-text text-transparent">Hemerson</span>
+        </h3>
+        <form id="lead-form" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-bold text-white mb-2 uppercase tracking-tighter">Cidade</label>
-              <select name="cidade" class="w-full bg-white/10 text-white border border-white/20 rounded-xl focus:outline-none focus:border-[#4a90e2] p-4 transition-all">
-                <option class="text-black">Sinop e proximidades</option>
-                <option class="text-black">Juína e proximidades</option>
-                <option class="text-black">Outra cidade</option>
-              </select>
+              <label class="block text-xs text-white/50 mb-1.5 uppercase tracking-wide">Nome completo</label>
+              <input
+                name="nome"
+                type="text"
+                required
+                class="w-full bg-white/5 border border-white/15 text-white placeholder-white/25 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#e85d26] transition-colors"
+              />
             </div>
             <div>
-              <label class="block text-sm font-bold text-white mb-2 uppercase tracking-tighter">Tipo de Obra</label>
-              <select name="tipo" class="w-full bg-white/10 text-white border border-white/20 rounded-xl focus:outline-none focus:border-[#4a90e2] p-4 transition-all">
-                <option class="text-black">Casa Residencial</option>
-                <option class="text-black">Prédio Comercial</option>
-                <option class="text-black">Galpão Comercial</option>
-                <option class="text-black">Outro</option>
-              </select>
+              <label class="block text-xs text-white/50 mb-1.5 uppercase tracking-wide">Telefone</label>
+              <input
+                name="telefone"
+                type="tel"
+                required
+                placeholder="(00) 00000-0000"
+                class="w-full bg-white/5 border border-white/15 text-white placeholder-white/25 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#e85d26] transition-colors"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-white/50 mb-1.5 uppercase tracking-wide">Cidade</label>
+            <input
+              name="cidade"
+              type="text"
+              placeholder="Ex: Sinop - MT"
+              class="w-full bg-white/5 border border-white/15 text-white placeholder-white/25 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#e85d26] transition-colors"
+            />
+          </div>
+          <div class="relative" id="wrapper-tipo">
+            <label class="block text-xs text-white/50 mb-1.5 uppercase tracking-wide">Qual seu projeto?</label>
+            <input type="hidden" name="tipo" id="tipo-value" value="" />
+            <button type="button" id="btn-tipo"
+              class="w-full bg-white/5 border border-white/15 text-white/50 rounded-lg px-4 py-3 text-sm text-left flex justify-between items-center focus:outline-none focus:border-[#e85d26] transition-colors">
+              <span id="label-tipo">Selecione sua resposta</span>
+              <svg class="w-4 h-4 text-white/40 flex-shrink-0 transition-transform duration-200" id="arrow-tipo" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div id="dropdown-tipo"
+              class="hidden absolute left-0 right-0 top-full mt-1 bg-[#0a1545]/90 backdrop-blur-md border border-white/15 rounded-lg overflow-hidden z-20 shadow-2xl">
+              {['Casa Residencial', 'Prédio Comercial', 'Galpão Comercial', 'Outro'].map(opt => (
+                <button type="button" class="opt-tipo w-full text-left px-4 py-3 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-colors" data-value={opt}>
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div class="relative" id="wrapper-etapa">
+            <label class="block text-xs text-white/50 mb-1.5 uppercase tracking-wide">Qual a etapa do seu projeto?</label>
+            <input type="hidden" name="etapa" id="etapa-value" value="" />
+            <button type="button" id="btn-etapa"
+              class="w-full bg-white/5 border border-white/15 text-white/50 rounded-lg px-4 py-3 text-sm text-left flex justify-between items-center focus:outline-none focus:border-[#e85d26] transition-colors">
+              <span id="label-etapa">Selecione sua resposta</span>
+              <svg class="w-4 h-4 text-white/40 flex-shrink-0 transition-transform duration-200" id="arrow-etapa" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div id="dropdown-etapa"
+              class="hidden absolute left-0 right-0 top-full mt-1 bg-[#0a1545]/90 backdrop-blur-md border border-white/15 rounded-lg overflow-hidden z-20 shadow-2xl">
+              {['Ainda não tenho terreno', 'Tenho terreno, sem projeto', 'Pronto para começar'].map(opt => (
+                <button type="button" class="opt-etapa w-full text-left px-4 py-3 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-colors" data-value={opt}>
+                  {opt}
+                </button>
+              ))}
             </div>
           </div>
           <button
             type="submit"
-            class="w-full bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white py-5 font-bold uppercase tracking-widest rounded-xl hover:brightness-110 transition-all"
+            class="w-full bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white py-4 font-bold uppercase tracking-widest text-sm hover:brightness-110 transition-all rounded-lg mt-2"
           >
-            Solicitar Orçamento Grátis
+            Enviar
           </button>
         </form>
       </div>
@@ -112,15 +156,83 @@
 </section>
 
 <script>
-  const form = document.getElementById('lead-form') as HTMLFormElement;
+  // Parallax
+  const contatoBg = document.getElementById('contato-parallax') as HTMLImageElement;
+  const section   = document.getElementById('contato') as HTMLElement;
+  window.addEventListener('scroll', () => {
+    const rect   = section.getBoundingClientRect();
+    const offset = (window.innerHeight - rect.top) * 0.15;
+    contatoBg.style.transform = `translateY(${offset}px)`;
+  }, { passive: true });
+
+  // Helper para criar dropdown customizado
+  function makeDropdown(wrapperId: string, btnId: string, dropdownId: string, arrowId: string, labelId: string, inputId: string, optClass: string) {
+    const btn      = document.getElementById(btnId) as HTMLButtonElement;
+    const dropdown = document.getElementById(dropdownId) as HTMLElement;
+    const arrow    = document.getElementById(arrowId) as HTMLElement;
+    const label    = document.getElementById(labelId) as HTMLElement;
+    const hidden   = document.getElementById(inputId) as HTMLInputElement;
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = !dropdown.classList.contains('hidden');
+      document.querySelectorAll('[id^="dropdown-"]').forEach(d => d.classList.add('hidden'));
+      document.querySelectorAll('[id^="arrow-"]').forEach((a: Element) => (a as HTMLElement).style.transform = '');
+      if (!open) {
+        dropdown.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      }
+    });
+
+    document.querySelectorAll('.' + optClass).forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = (opt as HTMLElement).dataset.value || '';
+        hidden.value = val;
+        label.textContent = val;
+        label.classList.replace('text-white/50', 'text-white');
+        dropdown.classList.add('hidden');
+        arrow.style.transform = '';
+      });
+    });
+  }
+
+  makeDropdown('wrapper-tipo',  'btn-tipo',  'dropdown-tipo',  'arrow-tipo',  'label-tipo',  'tipo-value',  'opt-tipo');
+  makeDropdown('wrapper-etapa', 'btn-etapa', 'dropdown-etapa', 'arrow-etapa', 'label-etapa', 'etapa-value', 'opt-etapa');
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('[id^="dropdown-"]').forEach(d => d.classList.add('hidden'));
+    document.querySelectorAll('[id^="arrow-"]').forEach((a: Element) => (a as HTMLElement).style.transform = '');
+  });
+
+  // Máscara telefone
+  const telInput = document.querySelector('input[name="telefone"]') as HTMLInputElement;
+  telInput.addEventListener('input', () => {
+    let v = telInput.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 10) {
+      v = v.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+    } else if (v.length > 6) {
+      v = v.replace(/^(\d{2})(\d{4,5})(\d{0,4})$/, '($1) $2-$3');
+    } else if (v.length > 2) {
+      v = v.replace(/^(\d{2})(\d+)$/, '($1) $2');
+    } else if (v.length > 0) {
+      v = v.replace(/^(\d+)$/, '($1');
+    }
+    telInput.value = v;
+  });
+
+  // Form submit
+  const form       = document.getElementById('lead-form') as HTMLFormElement;
+  const tipoVal    = document.getElementById('tipo-value') as HTMLInputElement;
+  const etapaVal   = document.getElementById('etapa-value') as HTMLInputElement;
   form.addEventListener('submit', (e: Event) => {
     e.preventDefault();
     const data     = new FormData(form);
     const nome     = data.get('nome') as string;
     const telefone = data.get('telefone') as string;
     const cidade   = data.get('cidade') as string;
-    const tipo     = data.get('tipo') as string;
-    const msg = `Olá Hemerson! Me chamo *${nome}*, telefone *${telefone}*. Tenho interesse em orçamento para *${tipo}* em *${cidade}*.`;
+    const tipo     = tipoVal.value  || 'Não informado';
+    const etapa    = etapaVal.value || 'Não informado';
+    const msg = `Olá Hemerson! Me chamo *${nome}*, telefone *${telefone}*. Tenho interesse em orçamento para *${tipo}* em *${cidade}*. Etapa: *${etapa}*.`;
     window.open(`https://wa.me/5566996752309?text=${encodeURIComponent(msg)}`, '_blank');
   });
 </script>

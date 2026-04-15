@@ -3,8 +3,10 @@
 
 <section id="home">
 
-  <!-- Foto de capa com texto sobreposto -->
-  <div class="relative w-full overflow-hidden rounded-b-3xl" style="height: 65vh; min-height: 420px;">
+  <!-- Mobile: tela cheia com foto em cima e escuro embaixo -->
+  <div id="hero-container" class="relative w-full overflow-hidden rounded-b-3xl">
+
+    <!-- Foto -->
     <img
       id="hero-parallax"
       src="/hero-capa.png"
@@ -12,11 +14,36 @@
       class="w-full object-cover absolute left-0 right-0"
       style="height: 130%; top: -10%;"
     />
-    <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
-    <!-- Texto centralizado à esquerda -->
-    <div class="absolute inset-0 flex items-center pt-20">
+    <!-- Degradê: transparente no topo → escuro embaixo (mobile) -->
+    <div class="absolute inset-0 md:hidden"
+         style="background: linear-gradient(to bottom, transparent 30%, #020037 70%);"></div>
+
+    <!-- Degradê desktop: lateral esquerdo -->
+    <div class="absolute inset-0 hidden md:block bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+
+    <!-- Conteúdo mobile: centralizado na parte escura -->
+    <div class="absolute inset-0 flex flex-col justify-end pb-16 px-7 md:hidden">
+      <h1 class="font-headline text-4xl font-semibold leading-snug tracking-tight mb-4 text-white">
+        O seu novo projeto<br/><strong class="font-bold">começa aqui.</strong>
+      </h1>
+      <p class="text-base text-white/70 mb-10 leading-relaxed">
+        Sua obra em Sinop começa quando você decide.
+      </p>
+      <a
+        href="#contato"
+        class="flex items-center justify-between bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-7 py-5 text-sm font-bold uppercase tracking-widest hover:brightness-110 transition-all w-full"
+      >
+        <span>Solicitar Orçamento</span>
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Conteúdo desktop: esquerda centralizado -->
+    <div class="absolute inset-0 hidden md:flex items-center pt-20">
       <div class="max-w-7xl mx-auto px-16 w-full">
         <div class="max-w-lg text-white">
           <h1 class="font-headline text-4xl md:text-5xl font-semibold leading-snug tracking-tight mb-4">
@@ -27,16 +54,33 @@
           </p>
           <a
             href="#contato"
-            class="inline-block bg-[#e85d26] text-white px-7 py-3 text-sm font-medium hover:brightness-110 transition-all"
+            class="inline-flex items-center gap-3 bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:brightness-110 transition-all"
           >
             Solicitar Orçamento
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
           </a>
         </div>
       </div>
     </div>
+
   </div>
 
 </section>
+
+<style>
+  #hero-container {
+    height: 100svh;
+    min-height: 600px;
+  }
+  @media (min-width: 768px) {
+    #hero-container {
+      height: 70vh;
+      min-height: 500px;
+    }
+  }
+</style>
 
 <script>
   const img = document.getElementById('hero-parallax') as HTMLImageElement;

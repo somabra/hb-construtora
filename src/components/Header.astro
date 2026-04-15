@@ -1,15 +1,15 @@
 ---
 const links = [
   { href: '#home',        label: 'Home' },
-  { href: '#sobre',       label: 'Sobre' },
   { href: '#servicos',    label: 'Serviços' },
-  { href: '#galeria',     label: 'Galeria' },
+  { href: '#sobre',       label: 'Sobre' },
+  { href: '#galeria',     label: 'Obras' },
+  { href: '#projetos',    label: 'Projetos' },
   { href: '#depoimentos', label: 'Depoimentos' },
-  { href: '#contato',     label: 'Contato' },
 ];
 ---
 
-<nav class="fixed top-0 w-full z-50 bg-[#1a1a4e] shadow-[0_20px_40px_rgba(27,28,28,0.06)]">
+<nav class="fixed top-0 w-full z-50 bg-transparent md:bg-[#1a1a4e] md:shadow-[0_20px_40px_rgba(27,28,28,0.06)] transition-all duration-300" id="main-nav">
   <div class="flex justify-between items-center px-8 py-4 max-w-full">
 
     <a href="#home">
@@ -39,13 +39,17 @@ const links = [
     </div>
 
     <!-- Mobile hamburger -->
-    <button id="menu-btn" class="md:hidden text-white" aria-label="Menu">
-      <span class="material-symbols-outlined">menu</span>
+    <button id="menu-btn" class="md:hidden text-white p-1" aria-label="Menu">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="4" y1="9" x2="28" y2="9" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="4" y1="16" x2="28" y2="16" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="4" y1="23" x2="28" y2="23" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
     </button>
   </div>
 
   <!-- Mobile dropdown -->
-  <div id="mobile-menu" class="hidden md:hidden bg-[#1a1a4e] border-t border-white/10">
+  <div id="mobile-menu" class="hidden md:hidden bg-[#1a1a4e]/95 backdrop-blur-md border-t border-white/10">
     <div class="flex flex-col px-8 py-6 gap-4">
       {links.map(link => (
         <a
@@ -68,7 +72,33 @@ const links = [
 </nav>
 
 <script>
-  const btn   = document.getElementById('menu-btn')!;
-  const menu  = document.getElementById('mobile-menu')!;
-  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+  const btn  = document.getElementById('menu-btn')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const nav  = document.getElementById('main-nav')!;
+
+  // Abre/fecha menu com fundo azul
+  btn.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
+    if (!menu.classList.contains('hidden')) {
+      nav.style.backgroundColor = '#1a1a4e';
+    } else {
+      nav.style.backgroundColor = 'transparent';
+    }
+  });
+
+  // Fecha menu ao clicar em link
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    menu.classList.add('hidden');
+    nav.style.backgroundColor = 'transparent';
+  }));
+
+  // Esconde nav ao descer, mostra ao subir (mobile only)
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    if (window.innerWidth >= 768) return;
+    if (!menu.classList.contains('hidden')) return;
+    const y = window.scrollY;
+    nav.style.transform = y > lastY && y > 60 ? 'translateY(-100%)' : 'translateY(0)';
+    lastY = y;
+  }, { passive: true });
 </script>
