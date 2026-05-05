@@ -1,0 +1,146 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  user?: { email?: string };
+}
+const { title = 'Admin', user } = Astro.props;
+
+const links = [
+  { href: '/admin',          label: 'Dashboard', icon: 'dashboard' },
+  { href: '/admin/leads',    label: 'Leads',     icon: 'inbox' },
+  { href: '/admin/secoes',   label: 'Seções',    icon: 'view_agenda' },
+  { href: '/admin/servicos', label: 'Serviços',  icon: 'home_repair_service' },
+  { href: '/admin/obras',    label: 'Obras',     icon: 'photo_library' },
+  { href: '/admin/faq',      label: 'FAQ',       icon: 'help' },
+  { href: '/admin/settings', label: 'Ajustes',   icon: 'tune' },
+];
+
+const current = Astro.url.pathname;
+function isActive(href: string) {
+  if (href === '/admin') return current === '/admin' || current === '/admin/';
+  return current.startsWith(href);
+}
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>{title} · HB Construtora</title>
+    <link rel="icon" type="image/png" href="/logo-hb.webp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;800&family=Public+Sans:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-h-screen bg-gray-50 text-gray-800 font-body flex">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-64 bg-primary text-white flex-shrink-0 flex flex-col -translate-x-full lg:translate-x-0 transition-transform">
+      <div class="px-6 py-5 border-b border-white/10 flex items-center gap-3">
+        <img src="/logo-hb-branco.webp" alt="HB" class="h-10" />
+        <span class="font-headline font-bold text-sm tracking-wider uppercase">Admin</span>
+      </div>
+
+      <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        {links.map(link => (
+          <a
+            href={link.href}
+            class={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+              isActive(link.href)
+                ? 'bg-orange-gradient text-white font-bold'
+                : 'text-white/70 hover:bg-white/5 hover:text-white'
+            }`}
+          >
+            <span class="material-symbols-outlined text-[20px]">{link.icon}</span>
+            <span>{link.label}</span>
+          </a>
+        ))}
+      </nav>
+
+      <div class="px-4 py-4 border-t border-white/10 space-y-2">
+        <a href="/" target="_blank" class="flex items-center gap-2 text-xs text-white/60 hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+          Ver site
+        </a>
+        {user?.email && (
+          <p class="text-xs text-white/50 truncate" title={user.email}>{user.email}</p>
+        )}
+        <form method="POST" action="/api/auth/signout">
+          <button type="submit" class="text-xs text-white/60 hover:text-white flex items-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-[16px]">logout</span>
+            Sair
+          </button>
+        </form>
+      </div>
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div id="sidebar-overlay" class="hidden fixed inset-0 z-30 bg-black/50 lg:hidden"></div>
+
+    <!-- Main -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <header class="bg-white border-b border-gray-200 px-4 lg:px-8 py-4 flex items-center gap-4 sticky top-0 z-20">
+        <button id="menu-btn" class="lg:hidden p-1.5 rounded hover:bg-gray-100" aria-label="Menu">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <h1 class="text-lg font-bold text-primary flex-1">{title}</h1>
+        <a
+          href="/api/publish"
+          id="publish-btn"
+          class="hidden lg:inline-flex items-center gap-2 bg-orange-gradient text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all"
+        >
+          <span class="material-symbols-outlined text-[18px]">cloud_upload</span>
+          Publicar alterações
+        </a>
+      </header>
+
+      <main class="flex-1 p-4 lg:p-8 max-w-6xl w-full mx-auto">
+        <slot />
+      </main>
+
+      <footer class="text-center text-xs text-gray-400 py-4">
+        Painel HB Construtora · powered by <span class="font-bold">Somabra</span>
+      </footer>
+    </div>
+
+    <script>
+      const btn = document.getElementById('menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      function toggle(open: boolean) {
+        sidebar?.classList.toggle('-translate-x-full', !open);
+        overlay?.classList.toggle('hidden', !open);
+      }
+      btn?.addEventListener('click', () => toggle(true));
+      overlay?.addEventListener('click', () => toggle(false));
+
+      // Publish button — chama /api/publish via fetch e mostra status
+      const publishBtn = document.getElementById('publish-btn') as HTMLAnchorElement | null;
+      publishBtn?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (!confirm('Disparar nova publicação? Suas alterações ficarão visíveis em ~1-2min.')) return;
+        publishBtn.style.opacity = '0.5';
+        publishBtn.style.pointerEvents = 'none';
+        try {
+          const res = await fetch('/api/publish', { method: 'POST' });
+          if (res.ok) {
+            alert('✅ Publicação disparada! Em 1-2min as alterações aparecem no site.');
+          } else {
+            const txt = await res.text();
+            alert('Erro ao publicar: ' + txt);
+          }
+        } catch (err) {
+          alert('Erro de conexão.');
+        } finally {
+          publishBtn.style.opacity = '';
+          publishBtn.style.pointerEvents = '';
+        }
+      });
+    </script>
+  </body>
+</html>

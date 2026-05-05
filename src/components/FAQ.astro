@@ -1,0 +1,54 @@
+---
+import { getFAQ } from '../lib/site-content';
+const faqs = await getFAQ();
+---
+
+<section id="faq" class="py-20 bg-gray-50">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="text-center mb-12">
+      <p class="text-sm font-semibold tracking-widest uppercase text-brand-orange mb-2">Dúvidas Frequentes</p>
+      <h2 class="text-3xl sm:text-4xl font-bold text-primary-container">Perguntas Frequentes</h2>
+      <div class="mt-4 mx-auto w-12 h-1 bg-brand-orange rounded"></div>
+    </div>
+
+    <div class="space-y-3" id="faq-list">
+      {faqs.map((item) => (
+        <div class="faq-item bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+          <button
+            class="faq-btn w-full text-left px-6 py-5 flex justify-between items-center gap-4 hover:bg-gray-50 transition-colors"
+            aria-expanded="false"
+          >
+            <span class="font-semibold text-primary-container text-base leading-snug">{item.pergunta}</span>
+            <span class="faq-icon text-brand-orange text-xl flex-shrink-0 transition-transform duration-300">▾</span>
+          </button>
+          <div class="faq-answer hidden px-6 pb-5">
+            <p class="text-gray-600 leading-relaxed text-sm whitespace-pre-line">{item.resposta}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item   = btn.closest('.faq-item')!;
+      const answer = item.querySelector<HTMLElement>('.faq-answer')!;
+      const icon   = btn.querySelector<HTMLElement>('.faq-icon')!;
+      const isOpen = !answer.classList.contains('hidden');
+
+      document.querySelectorAll('.faq-answer').forEach(a => a.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach(i => (i as HTMLElement).style.transform = 'rotate(0deg)');
+      document.querySelectorAll('.faq-btn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+
+      if (!isOpen) {
+        answer.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>

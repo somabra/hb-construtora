@@ -4,12 +4,47 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  noindex?: boolean;
 }
 
 const {
-  title = 'HB Construtora | Compromisso em Cada Detalhe',
-  description = 'Construção civil em Sinop-MT. Casas, kitnets, prédios e galpões. Acompanhamento pessoal do projeto à entrega da chave.',
+  title = 'HB Construtora | Construção Civil em Sinop-MT',
+  description = 'Construção civil em Sinop-MT. Casas, kitnets, prédios e galpões com mão de obra e material inclusos. Acompanhamento pessoal do projeto à entrega da chave.',
+  ogImage = '/hero/hero-capa.webp',
+  noindex = false,
 } = Astro.props;
+
+const siteUrl = 'https://hb-construtora.vercel.app';
+const canonical = new URL(Astro.url.pathname, siteUrl).toString();
+const ogImageUrl = new URL(ogImage, siteUrl).toString();
+
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'GeneralContractor',
+  name: 'HB Construtora',
+  image: ogImageUrl,
+  url: siteUrl,
+  telephone: '+55-66-99675-2309',
+  priceRange: '$$',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Rua dos Angicos, 1494',
+    addressLocality: 'Sinop',
+    addressRegion: 'MT',
+    postalCode: '78550-000',
+    addressCountry: 'BR',
+  },
+  areaServed: {
+    '@type': 'City',
+    name: 'Sinop',
+  },
+  sameAs: [
+    'https://instagram.com/hbconstrutoramt',
+    'https://wa.me/5566996752309',
+  ],
+  description,
+};
 ---
 
 <!doctype html>
@@ -17,8 +52,29 @@ const {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="HB Construtora" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="pt_BR" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#020037" />
+    <link rel="icon" type="image/png" href="/logo-hb.webp" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,8 +87,14 @@ const {
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
       rel="stylesheet"
     />
+
+    <!-- JSON-LD LocalBusiness -->
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
   </head>
   <body class="bg-surface text-on-surface font-body selection:bg-secondary-container selection:text-white">
     <slot />
+    <script>
+      import '../scripts/highlight-brush.ts';
+    </script>
   </body>
 </html>

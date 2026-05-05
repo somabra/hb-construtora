@@ -1,76 +1,122 @@
 ---
-const obras = [
-  {
-    img: '/obra-01.jpg',
-    alt: 'Casa Residencial — HB Construtora',
-    title: 'Casa Residencial',
-  },
-  {
-    img: '/obra-02.jpg',
-    alt: 'Entrega do Projeto — HB Construtora',
-    title: 'Entrega do Projeto',
-  },
-  {
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBm2j1tiBn7wnAFpEbuoKtV7xaY5UX-iXNQydqTHqJB7RD2qEHDZ7fFUJZB1U4FtDVC0zz6bpA40VjRXzaVyCymiB8W_porQWrHS5AYnQi6IfXGZL3HXCfvJTbKHD9ePQ4a41hQW68YGwjtP-7aWZ9hkjD8lRL97InKApdfKucf_JG-QZVEcX7h7vURKsPtyxjvEsrURVFsW1JTiosvBs6fQClve1eW5blzB2YpL-tf_P6uqIuXmZAMdT8FIuUXe66Fq-VMK_BT-96b',
-    alt: 'Centro Comercial Prime',
-    title: 'Centro Comercial Prime',
-  },
-];
+import { getObras, resolveImg } from '../lib/site-content';
+const obras = await getObras();
+const obrasClient = obras.map(o => ({
+  img: resolveImg(o.cover_path),
+  alt: `${o.titulo}${o.local ? ' — ' + o.local : ''}`,
+  title: o.titulo,
+  local: o.local ?? undefined,
+  gallery: o.fotos.length > 0
+    ? o.fotos.map(f => resolveImg(f.path))
+    : [resolveImg(o.cover_path)],
+}));
 ---
 
 <section id="galeria" class="py-24 bg-white overflow-hidden">
   <div class="max-w-7xl mx-auto px-8">
 
-    <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-end items-start mb-12 gap-8">
       <div>
         <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-4 block">Portfólio</span>
         <h2 class="font-headline text-4xl md:text-5xl font-bold text-primary">Obras Entregues</h2>
       </div>
-      <div class="flex gap-3">
-        <button id="prev-btn" class="w-11 h-11 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all" aria-label="Anterior">
+      <div class="hidden md:flex gap-3">
+        <button class="prev-btn w-11 h-11 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all" aria-label="Anterior">
           <span class="material-symbols-outlined">chevron_left</span>
         </button>
-        <button id="next-btn" class="w-11 h-11 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all" aria-label="Próximo">
+        <button class="next-btn w-11 h-11 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all" aria-label="Próximo">
           <span class="material-symbols-outlined">chevron_right</span>
         </button>
       </div>
     </div>
 
-    <!-- Carrossel -->
-    <div class="overflow-hidden">
-      <div id="gallery-track" class="flex gap-6 transition-transform duration-500 ease-in-out">
-        {obras.map(obra => (
-          <div class="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.33%-16px)]">
-            <div class="rounded-2xl overflow-hidden aspect-[4/3] w-full">
-              <img
-                src={obra.img}
-                alt={obra.alt}
-                class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-              />
+    <div class="relative">
+      <div class="overflow-hidden">
+        <div id="gallery-track" class="flex gap-6 transition-transform duration-500 ease-in-out">
+          {obrasClient.map((obra, i) => (
+            <div class="shrink-0 w-full md:w-[calc(50%-12px)]">
+              <div class="bg-white rounded-2xl overflow-hidden border border-primary/10 shadow-[0_20px_40px_rgba(27,28,28,0.06)] hover:shadow-[0_30px_60px_rgba(27,28,28,0.12)] transition-shadow duration-300">
+                <button
+                  type="button"
+                  class="obra-open group block w-full text-left"
+                  data-index={i}
+                  aria-label={`Ver mais fotos de ${obra.title}`}
+                >
+                  <div class="aspect-[4/3] w-full overflow-hidden bg-primary/5">
+                    <img
+                      src={obra.img}
+                      alt={obra.alt}
+                      loading="lazy"
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  </div>
+                </button>
+                <div class="px-6 py-5 flex items-end justify-between gap-4">
+                  <div>
+                    <h4 class="font-headline font-bold text-primary text-lg md:text-xl">{obra.title}</h4>
+                    {obra.local && <p class="text-gray-400 text-sm font-light mt-1">{obra.local}</p>}
+                  </div>
+                  <button
+                    type="button"
+                    class="obra-open inline-flex items-center gap-1 text-secondary font-bold tracking-wider uppercase text-xs border-b-2 border-secondary pb-1 hover:gap-2 transition-all shrink-0"
+                    data-index={i}
+                  >
+                    Ver mais
+                    <span class="material-symbols-outlined text-base">arrow_forward</span>
+                  </button>
+                </div>
+              </div>
             </div>
-            <h4 class="font-headline font-bold text-primary mt-4">{obra.title}</h4>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
+
+      <button class="prev-btn md:hidden absolute left-2 top-[37.5%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm border border-primary/20 flex items-center justify-center shadow-lg text-primary hover:bg-primary hover:text-white transition-all z-10" aria-label="Anterior">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button class="next-btn md:hidden absolute right-2 top-[37.5%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm border border-primary/20 flex items-center justify-center shadow-lg text-primary hover:bg-primary hover:text-white transition-all z-10" aria-label="Próximo">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
     </div>
 
   </div>
+
+  <div id="obra-modal" class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
+    <div class="min-h-full flex items-start md:items-center justify-center p-4 md:p-8">
+      <div class="bg-white w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl relative">
+        <button id="obra-close" class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/90 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all z-20" aria-label="Fechar">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+        <div class="p-6 md:p-10">
+          <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-2 block">Portfólio</span>
+          <h3 id="obra-title" class="font-headline text-2xl md:text-3xl font-bold text-primary"></h3>
+          <p id="obra-local" class="text-gray-400 text-sm font-light mt-1"></p>
+          <div id="obra-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="obras-data" set:html={JSON.stringify(obrasClient)}></script>
 </section>
 
 <script>
-  const track   = document.getElementById('gallery-track')!;
-  const prevBtn = document.getElementById('prev-btn')!;
-  const nextBtn = document.getElementById('next-btn')!;
+  type Obra = { img: string; alt: string; title: string; local?: string; gallery: string[] };
+  const obrasData: Obra[] = JSON.parse(document.getElementById('obras-data')!.textContent!);
+
+  const track    = document.getElementById('gallery-track')!;
+  const prevBtns = document.querySelectorAll<HTMLButtonElement>('.prev-btn');
+  const nextBtns = document.querySelectorAll<HTMLButtonElement>('.next-btn');
   let current = 0;
 
   function getVisible(): number {
-    if (window.innerWidth >= 1024) return 3;
     if (window.innerWidth >= 768) return 2;
     return 1;
   }
 
   function updateGallery(): void {
     const item = track.children[0] as HTMLElement;
+    if (!item) return;
     const gap = 24;
     const itemWidth = item.offsetWidth + gap;
     const maxSlide = track.children.length - getVisible();
@@ -78,7 +124,48 @@ const obras = [
     track.style.transform = `translateX(-${current * itemWidth}px)`;
   }
 
-  nextBtn.addEventListener('click', () => { current++; updateGallery(); });
-  prevBtn.addEventListener('click', () => { current--; updateGallery(); });
+  nextBtns.forEach(btn => btn.addEventListener('click', () => { current++; updateGallery(); }));
+  prevBtns.forEach(btn => btn.addEventListener('click', () => { current--; updateGallery(); }));
   window.addEventListener('resize', updateGallery);
+
+  const modal      = document.getElementById('obra-modal')!;
+  const modalClose = document.getElementById('obra-close')!;
+  const modalTitle = document.getElementById('obra-title')!;
+  const modalLocal = document.getElementById('obra-local')!;
+  const modalGrid  = document.getElementById('obra-grid')!;
+
+  function openObra(index: number) {
+    const obra = obrasData[index];
+    if (!obra) return;
+    modalTitle.textContent = obra.title;
+    modalLocal.textContent = obra.local ?? '';
+    modalLocal.style.display = obra.local ? '' : 'none';
+    modalGrid.innerHTML = obra.gallery.map(src => `
+      <div class="rounded-xl overflow-hidden aspect-[4/3] bg-primary/5">
+        <img src="${src}" alt="${obra.alt}" class="w-full h-full object-cover" loading="lazy" />
+      </div>
+    `).join('');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeObra() {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.obra-open').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.index);
+      openObra(idx);
+    });
+  });
+
+  modalClose.addEventListener('click', closeObra);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeObra();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeObra();
+  });
 </script>

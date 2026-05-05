@@ -1,46 +1,43 @@
 ---
 const links = [
-  { href: '#home',        label: 'Home' },
-  { href: '#servicos',    label: 'Serviços' },
-  { href: '#sobre',       label: 'Sobre' },
-  { href: '#galeria',     label: 'Obras' },
-  { href: '#projetos',    label: 'Projetos' },
-  { href: '#depoimentos', label: 'Depoimentos' },
+  { href: '#home',     label: 'Home' },
+  { href: '#servicos', label: 'Serviços' },
+  { href: '#galeria',  label: 'Obras' },
+  { href: '#sobre',    label: 'Sobre' },
+  { href: '#faq',      label: 'FAQ' },
 ];
 ---
 
-<nav class="fixed top-0 w-full z-50 bg-transparent md:bg-[#1a1a4e] md:shadow-[0_20px_40px_rgba(27,28,28,0.06)] transition-all duration-300" id="main-nav">
-  <div class="flex justify-between items-center px-8 py-4 max-w-full">
+<nav class="fixed top-0 w-full z-50 bg-primary-container shadow-[0_20px_40px_rgba(27,28,28,0.06)] transition-transform duration-300" id="main-nav" aria-label="Navegação principal">
+  <div class="flex justify-between items-center px-8 py-1 max-w-full">
 
-    <a href="#home">
-      <img src="/logo-hb.png" alt="HB Construtora" class="h-10 w-auto" />
+    <a href="#home" class="flex items-center" aria-label="HB Construtora — Ir para o topo">
+      <img src="/logo-hb-branco.webp" alt="HB Construtora" class="h-14 md:h-16 w-auto" />
     </a>
 
     <!-- Desktop nav -->
-    <div id="nav-links" class="hidden md:flex gap-8 items-center">
-      {links.map((link, i) => (
+    <div class="hidden md:flex gap-8 items-center">
+      {links.map(link => (
         <a
           href={link.href}
-          class={`font-headline font-bold uppercase tracking-wider text-[12px] transition-colors duration-300 ${
-            i === 0
-              ? 'text-[#e85d26] border-b-2 border-[#e85d26] pb-1'
-              : 'text-white/90 hover:text-[#e85d26]'
-          }`}
+          data-nav-link
+          data-target={link.href.slice(1)}
+          class="nav-link font-headline font-bold uppercase tracking-wider text-[12px] text-white/90 hover:text-brand-orange transition-colors duration-300 pb-1"
         >
           {link.label}
         </a>
       ))}
       <a
         href="#contato"
-        class="bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-6 py-2 font-bold uppercase text-[12px] tracking-widest hover:brightness-110 transition-all"
+        class="bg-orange-gradient text-white px-6 py-2 font-bold uppercase text-[12px] tracking-widest hover:brightness-110 transition-all"
       >
         Orçamento
       </a>
     </div>
 
     <!-- Mobile hamburger -->
-    <button id="menu-btn" class="md:hidden text-white p-1" aria-label="Menu">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <button id="menu-btn" class="md:hidden text-white p-1" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <line x1="4" y1="9" x2="28" y2="9" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="4" y1="16" x2="28" y2="16" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="4" y1="23" x2="28" y2="23" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
@@ -49,21 +46,21 @@ const links = [
   </div>
 
   <!-- Mobile dropdown -->
-  <div id="mobile-menu" class="hidden md:hidden bg-[#1a1a4e]/95 backdrop-blur-md border-t border-white/10">
+  <div id="mobile-menu" class="hidden md:hidden bg-primary-container/95 backdrop-blur-md border-t border-white/10">
     <div class="flex flex-col px-8 py-6 gap-4">
       {links.map(link => (
         <a
           href={link.href}
-          class="font-headline font-bold uppercase tracking-wider text-[13px] text-white/90 hover:text-[#e85d26] transition-colors py-1 border-b border-white/5"
-          onclick="document.getElementById('mobile-menu').classList.add('hidden')"
+          data-nav-link
+          data-target={link.href.slice(1)}
+          class="nav-link font-headline font-bold uppercase tracking-wider text-[13px] text-white/90 hover:text-brand-orange transition-colors py-1 border-b border-white/5"
         >
           {link.label}
         </a>
       ))}
       <a
         href="#contato"
-        class="bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-6 py-3 font-bold uppercase text-[12px] tracking-widest text-center hover:brightness-110 transition-all mt-2"
-        onclick="document.getElementById('mobile-menu').classList.add('hidden')"
+        class="bg-orange-gradient text-white px-6 py-3 font-bold uppercase text-[12px] tracking-widest text-center hover:brightness-110 transition-all mt-2"
       >
         Orçamento
       </a>
@@ -71,25 +68,26 @@ const links = [
   </div>
 </nav>
 
+<style>
+  .nav-link.is-active {
+    color: theme('colors.brand.orange');
+    border-bottom: 2px solid theme('colors.brand.orange');
+  }
+</style>
+
 <script>
   const btn  = document.getElementById('menu-btn')!;
   const menu = document.getElementById('mobile-menu')!;
   const nav  = document.getElementById('main-nav')!;
 
-  // Abre/fecha menu com fundo azul
   btn.addEventListener('click', () => {
-    menu.classList.toggle('hidden');
-    if (!menu.classList.contains('hidden')) {
-      nav.style.backgroundColor = '#1a1a4e';
-    } else {
-      nav.style.backgroundColor = 'transparent';
-    }
+    const open = menu.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', String(!open));
   });
 
-  // Fecha menu ao clicar em link
   menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
     menu.classList.add('hidden');
-    nav.style.backgroundColor = 'transparent';
+    btn.setAttribute('aria-expanded', 'false');
   }));
 
   // Esconde nav ao descer, mostra ao subir (mobile only)
@@ -101,4 +99,30 @@ const links = [
     nav.style.transform = y > lastY && y > 60 ? 'translateY(-100%)' : 'translateY(0)';
     lastY = y;
   }, { passive: true });
+
+  // Active link tracking via IntersectionObserver
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+  const sections = ['home', 'servicos', 'galeria', 'sobre', 'faq']
+    .map(id => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  function setActive(id: string) {
+    links.forEach(l => {
+      l.classList.toggle('is-active', l.dataset.target === id);
+    });
+  }
+
+  if (sections.length > 0) {
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActive(visible.target.id);
+      },
+      { rootMargin: '-40% 0px -55% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    sections.forEach(s => observer.observe(s));
+    setActive('home');
+  }
 </script>

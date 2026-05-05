@@ -21,3 +21,44 @@ section[id] {
 .hero-overlay {
   background: linear-gradient(135deg, rgba(2, 0, 55, 0.92) 0%, rgba(26, 26, 78, 0.85) 100%);
 }
+
+/* ===== Highlight marca-texto animado (HB) ===== */
+.hl-brush {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  padding: 0 6px;
+  color: #ffffff;
+  z-index: 0;
+}
+
+.hl-brush::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 5%;
+  bottom: 5%;
+  background: #e85d26;
+  z-index: -1;
+  transform: scaleX(0) skewX(-4deg);
+  transform-origin: left center;
+  transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.hl-brush.is-visible::before {
+  transform: scaleX(1) skewX(-4deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hl-brush::before {
+    transition: none;
+    transform: scaleX(1) skewX(-4deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .hl-brush {
+    padding: 0 4px;
+  }
+}

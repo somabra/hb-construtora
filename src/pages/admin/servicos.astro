@@ -1,0 +1,152 @@
+---
+export const prerender = false;
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import ImageUploader from '../../components/admin/ImageUploader.tsx';
+import { resolveImg } from '../../lib/site-content';
+
+const supabase = Astro.locals.supabase!;
+const user = Astro.locals.user!;
+
+const { data: items } = await supabase
+  .from('servicos')
+  .select('*')
+  .order('position', { ascending: true });
+
+const editId = Astro.url.searchParams.get('edit');
+const adding = Astro.url.searchParams.get('add') === '1';
+const editItem = editId ? items?.find(i => i.id === editId) : null;
+const STORAGE_URL = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public/site-media/`;
+---
+
+<AdminLayout title="Serviços" user={user}>
+
+  <div class="flex items-center justify-between mb-6 gap-4">
+    <p class="text-gray-600">{items?.length ?? 0} serviços cadastrados</p>
+    {!adding && !editItem && (
+      <a href="/admin/servicos?add=1" class="inline-flex items-center gap-2 bg-orange-gradient text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all">
+        <span class="material-symbols-outlined text-[18px]">add</span>
+        Novo serviço
+      </a>
+    )}
+  </div>
+
+  {(adding || editItem) && (
+    <form method="POST" action="/api/admin/servicos" class="bg-white rounded-2xl border-2 border-brand-orange p-6 mb-6 space-y-4">
+      <input type="hidden" name="_action" value={editItem ? 'update' : 'create'} />
+      {editItem && <input type="hidden" name="id" value={editItem.id} />}
+
+      <h3 class="font-bold text-primary text-lg">{editItem ? `Editando: ${editItem.titulo}` : 'Novo serviço'}</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Título</label>
+          <input name="titulo" type="text" required value={editItem?.titulo ?? ''} class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Slug (interno, sem espaço)</label>
+          <input name="slug" type="text" required pattern="[a-z0-9-]+" value={editItem?.slug ?? ''} class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Descrição curta (aparece no card)</label>
+        <input name="descricao" type="text" required value={editItem?.descricao ?? ''} class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+      </div>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Descrição longa (texto do modal ao clicar no card)</label>
+        <textarea name="longa_descricao" rows="6" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange resize-y">{editItem?.longa_descricao ?? ''}</textarea>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Texto do botão CTA</label>
+          <input name="cta_text" type="text" value={editItem?.cta_text ?? ''} class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Pré-seleção no formulário</label>
+          <select name="form_value" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange bg-white">
+            <option value="">— escolher —</option>
+            {['Casa Residencial', 'Prédio Comercial', 'Galpão Comercial', 'Outro'].map(opt => (
+              <option value={opt} selected={editItem?.form_value === opt}>{opt}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Imagem do card</label>
+        <ImageUploader
+          name="imagem_path"
+          initial={editItem?.imagem_path ?? null}
+          folder="servicos"
+          storagePublicUrl={STORAGE_URL}
+          client:load
+        />
+      </div>
+
+      <label class="flex items-center gap-2 text-sm text-gray-600">
+        <input type="checkbox" name="enabled" value="true" checked={editItem ? editItem.enabled : true} class="w-4 h-4" />
+        Visível no site
+      </label>
+
+      <div class="flex gap-2 justify-end pt-2">
+        <a href="/admin/servicos" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</a>
+        <button type="submit" class="bg-orange-gradient text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110">
+          {editItem ? 'Salvar' : 'Criar serviço'}
+        </button>
+      </div>
+    </form>
+  )}
+
+  <ul class="space-y-2">
+    {items?.map((item, idx) => (
+      <li class={`bg-white rounded-2xl border ${editId === item.id ? 'border-brand-orange' : 'border-gray-200'} p-4 flex items-center gap-3`}>
+        <div class="flex flex-col gap-1">
+          <form method="POST" action="/api/admin/servicos" class="leading-none">
+            <input type="hidden" name="_action" value="reorder" />
+            <input type="hidden" name="id" value={item.id} />
+            <input type="hidden" name="dir" value="up" />
+            <button type="submit" disabled={idx === 0} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra cima">
+              <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_upward</span>
+            </button>
+          </form>
+          <form method="POST" action="/api/admin/servicos" class="leading-none">
+            <input type="hidden" name="_action" value="reorder" />
+            <input type="hidden" name="id" value={item.id} />
+            <input type="hidden" name="dir" value="down" />
+            <button type="submit" disabled={idx === (items?.length ?? 0) - 1} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra baixo">
+              <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_downward</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="w-20 h-16 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+          {item.imagem_path && (
+            <img src={resolveImg(item.imagem_path)} alt={item.titulo} class="w-full h-full object-cover" />
+          )}
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-primary">{item.titulo}</p>
+          <p class="text-sm text-gray-600 truncate">{item.descricao}</p>
+          {!item.enabled && <span class="inline-block mt-1 text-[10px] uppercase tracking-wider bg-gray-200 text-gray-600 px-2 py-0.5 rounded">Oculto</span>}
+        </div>
+
+        <div class="flex gap-1">
+          <a href={`/admin/servicos?edit=${item.id}`} class="p-2 rounded hover:bg-gray-100" aria-label="Editar">
+            <span class="material-symbols-outlined text-[18px] text-gray-500">edit</span>
+          </a>
+          <form method="POST" action="/api/admin/servicos" onsubmit="return confirm('Apagar este serviço?')">
+            <input type="hidden" name="_action" value="delete" />
+            <input type="hidden" name="id" value={item.id} />
+            <button type="submit" class="p-2 rounded hover:bg-red-50 text-error" aria-label="Apagar">
+              <span class="material-symbols-outlined text-[18px]">delete</span>
+            </button>
+          </form>
+        </div>
+      </li>
+    ))}
+  </ul>
+
+</AdminLayout>

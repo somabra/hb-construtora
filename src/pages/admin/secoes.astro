@@ -1,0 +1,70 @@
+---
+export const prerender = false;
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const supabase = Astro.locals.supabase!;
+const user = Astro.locals.user!;
+
+const { data: sections } = await supabase
+  .from('site_sections')
+  .select('*')
+  .order('position', { ascending: true });
+---
+
+<AdminLayout title="Ordem das Seções" user={user}>
+
+  <p class="text-gray-600 mb-6 text-sm">Use as setas pra reordenar as seções da página inicial. Você também pode <strong>ocultar</strong> uma seção sem apagá-la.</p>
+
+  <ul class="space-y-2">
+    {sections?.map((s, idx) => (
+      <li class="bg-white rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
+        <span class="font-bold text-2xl text-gray-300 w-8 text-center">{idx + 1}</span>
+
+        <div class="flex flex-col gap-1">
+          <form method="POST" action="/api/admin/secoes" class="leading-none">
+            <input type="hidden" name="_action" value="reorder" />
+            <input type="hidden" name="id" value={s.id} />
+            <input type="hidden" name="dir" value="up" />
+            <button type="submit" disabled={idx === 0} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra cima">
+              <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_upward</span>
+            </button>
+          </form>
+          <form method="POST" action="/api/admin/secoes" class="leading-none">
+            <input type="hidden" name="_action" value="reorder" />
+            <input type="hidden" name="id" value={s.id} />
+            <input type="hidden" name="dir" value="down" />
+            <button type="submit" disabled={idx === (sections?.length ?? 0) - 1} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra baixo">
+              <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_downward</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-primary">{s.title}</p>
+          <p class="text-xs text-gray-400 uppercase tracking-wider">slug: {s.slug}</p>
+        </div>
+
+        <form method="POST" action="/api/admin/secoes">
+          <input type="hidden" name="_action" value="toggle" />
+          <input type="hidden" name="id" value={s.id} />
+          <button
+            type="submit"
+            class={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
+              s.enabled
+                ? 'bg-green-100 text-success hover:bg-green-200'
+                : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+            }`}
+          >
+            {s.enabled ? '✓ Visível' : '○ Oculto'}
+          </button>
+        </form>
+      </li>
+    ))}
+  </ul>
+
+  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-8 text-sm text-blue-900">
+    <p class="font-bold mb-1">💡 Dica</p>
+    <p>O <strong>Hero</strong> (topo do site) deve sempre ser a primeira seção. Se você precisar ocultá-lo, considere editar o conteúdo dele em <a href="/admin/settings" class="underline">Ajustes</a> em vez disso.</p>
+  </div>
+
+</AdminLayout>

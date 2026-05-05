@@ -1,0 +1,114 @@
+---
+export const prerender = false;
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const supabase = Astro.locals.supabase!;
+const user = Astro.locals.user!;
+
+const { data: items } = await supabase
+  .from('faq_items')
+  .select('*')
+  .order('position', { ascending: true });
+
+const editId = Astro.url.searchParams.get('edit');
+const adding = Astro.url.searchParams.get('add') === '1';
+const editItem = editId ? items?.find(i => i.id === editId) : null;
+---
+
+<AdminLayout title="FAQ" user={user}>
+
+  <div class="flex items-center justify-between mb-6 gap-4">
+    <p class="text-gray-600">{items?.length ?? 0} perguntas cadastradas</p>
+    {!adding && !editItem && (
+      <a
+        href="/admin/faq?add=1"
+        class="inline-flex items-center gap-2 bg-orange-gradient text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all"
+      >
+        <span class="material-symbols-outlined text-[18px]">add</span>
+        Nova pergunta
+      </a>
+    )}
+  </div>
+
+  {(adding || editItem) && (
+    <form method="POST" action="/api/admin/faq" class="bg-white rounded-2xl border-2 border-brand-orange p-6 mb-6 space-y-4">
+      <input type="hidden" name="_action" value={editItem ? 'update' : 'create'} />
+      {editItem && <input type="hidden" name="id" value={editItem.id} />}
+      <h3 class="font-bold text-primary text-lg">{editItem ? 'Editando pergunta' : 'Nova pergunta'}</h3>
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Pergunta</label>
+        <input
+          name="pergunta"
+          type="text"
+          required
+          value={editItem?.pergunta ?? ''}
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange"
+        />
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Resposta</label>
+        <textarea
+          name="resposta"
+          required
+          rows="5"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange resize-y"
+        >{editItem?.resposta ?? ''}</textarea>
+      </div>
+      <label class="flex items-center gap-2 text-sm text-gray-600">
+        <input type="checkbox" name="enabled" value="true" checked={editItem ? editItem.enabled : true} class="w-4 h-4" />
+        Visível no site
+      </label>
+      <div class="flex gap-2 justify-end pt-2">
+        <a href="/admin/faq" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</a>
+        <button type="submit" class="bg-orange-gradient text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110">
+          {editItem ? 'Salvar alterações' : 'Adicionar'}
+        </button>
+      </div>
+    </form>
+  )}
+
+  <ul class="space-y-2">
+    {items?.map((item, idx) => (
+      <li class={`bg-white rounded-2xl border ${editId === item.id ? 'border-brand-orange' : 'border-gray-200'} p-4 flex items-start gap-3`}>
+        <div class="flex flex-col gap-1 pt-1">
+          <form method="POST" action="/api/admin/faq" class="leading-none">
+            <input type="hidden" name="_action" value="reorder" />
+            <input type="hidden" name="id" value={item.id} />
+            <input type="hidden" name="dir" value="up" />
+            <button type="submit" disabled={idx === 0} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra cima">
+              <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_upward</span>
+            </button>
+          </form>
+          <form method="POST" action="/api/admin/faq" class="leading-none">
+            <input type="hidden" name="_action" value="reorder" />
+            <input type="hidden" name="id" value={item.id} />
+            <input type="hidden" name="dir" value="down" />
+            <button type="submit" disabled={idx === (items?.length ?? 0) - 1} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra baixo">
+              <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_downward</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-primary">{item.pergunta}</p>
+          <p class="text-sm text-gray-600 mt-1 line-clamp-2 whitespace-pre-line">{item.resposta}</p>
+          {!item.enabled && <span class="inline-block mt-2 text-[10px] uppercase tracking-wider bg-gray-200 text-gray-600 px-2 py-0.5 rounded">Oculto</span>}
+        </div>
+
+        <div class="flex gap-1">
+          <a href={`/admin/faq?edit=${item.id}`} class="p-2 rounded hover:bg-gray-100" aria-label="Editar">
+            <span class="material-symbols-outlined text-[18px] text-gray-500">edit</span>
+          </a>
+          <form method="POST" action="/api/admin/faq" onsubmit="return confirm('Apagar esta pergunta?')">
+            <input type="hidden" name="_action" value="delete" />
+            <input type="hidden" name="id" value={item.id} />
+            <button type="submit" class="p-2 rounded hover:bg-red-50 text-error" aria-label="Apagar">
+              <span class="material-symbols-outlined text-[18px]">delete</span>
+            </button>
+          </form>
+        </div>
+      </li>
+    ))}
+  </ul>
+
+</AdminLayout>

@@ -1,91 +1,81 @@
 ---
+import WhatsappIcon from './WhatsappIcon.astro';
+import { getSetting } from '../lib/site-content';
+
+interface HeroData { eyebrow: string; titulo_html: string; paragrafo: string; video_url: string; cta_text: string; }
+interface WaData   { numero: string; mensagem_default: string; }
+
+const hero = (await getSetting<HeroData>('hero')) ?? { eyebrow: '', titulo_html: '', paragrafo: '', video_url: '', cta_text: 'Falar conosco' };
+const wa   = (await getSetting<WaData>('whatsapp')) ?? { numero: '5566996752309', mensagem_default: 'Olá!' };
+
+const waHref = `https://wa.me/${wa.numero}?text=${encodeURIComponent(wa.mensagem_default)}`;
+
+// Converte qualquer URL de YouTube pro embed
+function ytEmbed(url: string): string | null {
+  if (!url) return null;
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : null;
+}
+const videoEmbed = ytEmbed(hero.video_url);
 ---
 
-<section id="home">
+<section id="home" class="relative overflow-hidden pt-32 pb-20 md:pt-40 md:pb-28">
 
-  <!-- Mobile: tela cheia com foto em cima e escuro embaixo -->
-  <div id="hero-container" class="relative w-full overflow-hidden rounded-b-3xl">
+  <div class="absolute inset-0 overflow-hidden">
+    <video
+      class="absolute inset-0 w-full h-full object-cover"
+      src="/contato/contato-bg.mp4"
+      poster="/contato/contato-bg.webp"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      aria-hidden="true"
+    ></video>
+    <div class="absolute inset-0 bg-primary/80"></div>
+  </div>
 
-    <!-- Foto -->
-    <img
-      id="hero-parallax"
-      src="/hero-capa.png"
-      alt="Obra HB Construtora"
-      class="w-full object-cover absolute left-0 right-0"
-      style="height: 130%; top: -10%;"
-    />
+  <div class="relative max-w-4xl mx-auto px-6 md:px-10 flex flex-col items-center text-center">
+    <span class="text-brand-orange font-bold tracking-[0.3em] uppercase text-xs mb-5 block">{hero.eyebrow}</span>
 
-    <!-- Degradê: transparente no topo → escuro embaixo (mobile) -->
-    <div class="absolute inset-0 md:hidden"
-         style="background: linear-gradient(to bottom, transparent 30%, #020037 70%);"></div>
+    <h1 class="font-headline text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight" set:html={hero.titulo_html}></h1>
 
-    <!-- Degradê desktop: lateral esquerdo -->
-    <div class="absolute inset-0 hidden md:block bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+    <p class="mt-6 md:mt-8 text-white/70 leading-relaxed text-base md:text-lg max-w-2xl">
+      {hero.paragrafo}
+    </p>
 
-    <!-- Conteúdo mobile: centralizado na parte escura -->
-    <div class="absolute inset-0 flex flex-col justify-end pb-16 px-7 md:hidden">
-      <h1 class="font-headline text-4xl font-semibold leading-snug tracking-tight mb-4 text-white">
-        O seu novo projeto<br/><strong class="font-bold">começa aqui.</strong>
-      </h1>
-      <p class="text-base text-white/70 mb-10 leading-relaxed">
-        Sua obra em Sinop começa quando você decide.
-      </p>
-      <a
-        href="#contato"
-        class="flex items-center justify-between bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-7 py-5 text-sm font-bold uppercase tracking-widest hover:brightness-110 transition-all w-full"
-      >
-        <span>Solicitar Orçamento</span>
-        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-        </svg>
-      </a>
-    </div>
-
-    <!-- Conteúdo desktop: esquerda centralizado -->
-    <div class="absolute inset-0 hidden md:flex items-center pt-20">
-      <div class="max-w-7xl mx-auto px-16 w-full">
-        <div class="max-w-lg text-white">
-          <h1 class="font-headline text-4xl md:text-5xl font-semibold leading-snug tracking-tight mb-4">
-            O seu novo projeto<br/><strong class="font-bold">começa aqui.</strong>
-          </h1>
-          <p class="text-base text-white/75 mb-8 leading-relaxed">
-            Sua obra em Sinop começa quando você decide.
-          </p>
-          <a
-            href="#contato"
-            class="inline-flex items-center gap-3 bg-gradient-to-r from-[#f0884a] to-[#d94e18] text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:brightness-110 transition-all"
-          >
-            Solicitar Orçamento
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    <div class="relative aspect-video w-full max-w-3xl mt-10 md:mt-12 rounded-2xl overflow-hidden border border-white/10 bg-primary-container/80 backdrop-blur-md shadow-2xl">
+      {videoEmbed ? (
+        <iframe
+          class="absolute inset-0 w-full h-full"
+          src={videoEmbed}
+          title="Vídeo institucional HB Construtora"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      ) : (
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-white/40">
+          <div class="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+            <svg class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5v14l11-7z"/>
             </svg>
-          </a>
+          </div>
+          <span class="text-xs uppercase tracking-[0.3em]">Vídeo em breve</span>
         </div>
-      </div>
+      )}
     </div>
 
+    <a
+      href={waHref}
+      target="_blank"
+      rel="noopener"
+      class="mt-8 md:mt-10 inline-flex items-center gap-3 bg-whatsapp-gradient text-white px-8 sm:px-10 py-3.5 md:py-4 text-sm md:text-base font-bold uppercase tracking-wider whitespace-nowrap hover:brightness-110 transition-all rounded-lg shadow-lg shadow-green-900/30"
+    >
+      <WhatsappIcon class="w-5 h-5 flex-shrink-0" />
+      {hero.cta_text}
+    </a>
   </div>
 
 </section>
-
-<style>
-  #hero-container {
-    height: 100svh;
-    min-height: 600px;
-  }
-  @media (min-width: 768px) {
-    #hero-container {
-      height: 70vh;
-      min-height: 500px;
-    }
-  }
-</style>
-
-<script>
-  const img = document.getElementById('hero-parallax') as HTMLImageElement;
-  window.addEventListener('scroll', () => {
-    const offset = window.scrollY * 0.35;
-    img.style.transform = `translateY(${offset}px)`;
-  }, { passive: true });
-</script>

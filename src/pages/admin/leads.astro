@@ -1,0 +1,76 @@
+---
+export const prerender = false;
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const supabase = Astro.locals.supabase!;
+const user = Astro.locals.user!;
+
+const { data: leads } = await supabase
+  .from('leads')
+  .select('*')
+  .order('created_at', { ascending: false });
+---
+
+<AdminLayout title="Leads" user={user}>
+
+  <div class="flex items-center justify-between mb-6 gap-4">
+    <p class="text-gray-600">{leads?.length ?? 0} leads recebidos</p>
+    <a
+      href="/api/leads/export"
+      class="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-125 transition-all"
+    >
+      <span class="material-symbols-outlined text-[18px]">download</span>
+      Exportar CSV
+    </a>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    {leads && leads.length > 0 ? (
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
+            <tr>
+              <th class="text-left px-4 py-3">Data</th>
+              <th class="text-left px-4 py-3">Nome</th>
+              <th class="text-left px-4 py-3">Telefone</th>
+              <th class="text-left px-4 py-3">Cidade</th>
+              <th class="text-left px-4 py-3">Tipo</th>
+              <th class="text-left px-4 py-3">Etapa</th>
+              <th class="text-right px-4 py-3">WhatsApp</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            {leads.map(l => {
+              const d = new Date(l.created_at);
+              const data = d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+              const waNum = l.telefone.replace(/\D/g, '');
+              return (
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-3 text-gray-500 whitespace-nowrap">{data}</td>
+                  <td class="px-4 py-3 font-semibold text-gray-800">{l.nome}</td>
+                  <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{l.telefone}</td>
+                  <td class="px-4 py-3 text-gray-600">{l.cidade ?? '—'}</td>
+                  <td class="px-4 py-3 text-gray-600">{l.tipo}</td>
+                  <td class="px-4 py-3 text-gray-600">{l.etapa}</td>
+                  <td class="px-4 py-3 text-right">
+                    <a
+                      href={`https://wa.me/55${waNum}`}
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-center gap-1 text-success font-semibold text-xs uppercase tracking-wider hover:underline"
+                    >
+                      Chamar
+                    </a>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <p class="px-6 py-16 text-center text-gray-400">Nenhum lead recebido ainda.</p>
+    )}
+  </div>
+
+</AdminLayout>

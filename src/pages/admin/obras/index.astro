@@ -1,0 +1,120 @@
+---
+export const prerender = false;
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import ImageUploader from '../../../components/admin/ImageUploader.tsx';
+import { resolveImg } from '../../../lib/site-content';
+
+const supabase = Astro.locals.supabase!;
+const user = Astro.locals.user!;
+
+const { data: obras } = await supabase
+  .from('obras')
+  .select('*, obra_fotos(count)')
+  .order('position', { ascending: true });
+
+const adding = Astro.url.searchParams.get('add') === '1';
+const STORAGE_URL = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public/site-media/`;
+---
+
+<AdminLayout title="Obras / Galeria" user={user}>
+
+  <div class="flex items-center justify-between mb-6 gap-4">
+    <p class="text-gray-600">{obras?.length ?? 0} obras na galeria</p>
+    {!adding && (
+      <a href="/admin/obras?add=1" class="inline-flex items-center gap-2 bg-orange-gradient text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all">
+        <span class="material-symbols-outlined text-[18px]">add</span>
+        Nova obra
+      </a>
+    )}
+  </div>
+
+  {adding && (
+    <form method="POST" action="/api/admin/obras" class="bg-white rounded-2xl border-2 border-brand-orange p-6 mb-6 space-y-4">
+      <input type="hidden" name="_action" value="create" />
+      <h3 class="font-bold text-primary text-lg">Nova obra</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Título</label>
+          <input name="titulo" type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Local (opcional)</label>
+          <input name="local" type="text" placeholder="Ex: Sinop MT" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Foto de capa</label>
+        <ImageUploader name="cover_path" folder="obras" storagePublicUrl={STORAGE_URL} client:load />
+      </div>
+
+      <label class="flex items-center gap-2 text-sm text-gray-600">
+        <input type="checkbox" name="enabled" value="true" checked class="w-4 h-4" />
+        Visível no site
+      </label>
+
+      <div class="flex gap-2 justify-end pt-2">
+        <a href="/admin/obras" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</a>
+        <button type="submit" class="bg-orange-gradient text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110">
+          Criar e adicionar fotos
+        </button>
+      </div>
+    </form>
+  )}
+
+  <ul class="space-y-2">
+    {obras?.map((o, idx) => {
+      const fotosCount = (o.obra_fotos?.[0] as any)?.count ?? 0;
+      return (
+        <li class="bg-white rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
+          <div class="flex flex-col gap-1">
+            <form method="POST" action="/api/admin/obras" class="leading-none">
+              <input type="hidden" name="_action" value="reorder" />
+              <input type="hidden" name="id" value={o.id} />
+              <input type="hidden" name="dir" value="up" />
+              <button type="submit" disabled={idx === 0} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra cima">
+                <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_upward</span>
+              </button>
+            </form>
+            <form method="POST" action="/api/admin/obras" class="leading-none">
+              <input type="hidden" name="_action" value="reorder" />
+              <input type="hidden" name="id" value={o.id} />
+              <input type="hidden" name="dir" value="down" />
+              <button type="submit" disabled={idx === (obras?.length ?? 0) - 1} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra baixo">
+                <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_downward</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="w-20 h-16 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+            {o.cover_path && <img src={resolveImg(o.cover_path)} alt={o.titulo} class="w-full h-full object-cover" />}
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-primary">{o.titulo}</p>
+            <p class="text-xs text-gray-500">
+              {o.local && <span>{o.local} · </span>}
+              {fotosCount} {fotosCount === 1 ? 'foto' : 'fotos'}
+              {!o.enabled && <span class="ml-2 text-[10px] uppercase tracking-wider bg-gray-200 text-gray-600 px-2 py-0.5 rounded">Oculto</span>}
+            </p>
+          </div>
+
+          <div class="flex gap-1">
+            <a href={`/admin/obras/${o.id}`} class="px-3 py-2 rounded text-xs font-bold uppercase tracking-wider text-brand-orange hover:bg-orange-50">
+              Editar
+            </a>
+            <form method="POST" action="/api/admin/obras" onsubmit="return confirm('Apagar esta obra e todas suas fotos?')">
+              <input type="hidden" name="_action" value="delete" />
+              <input type="hidden" name="id" value={o.id} />
+              <button type="submit" class="p-2 rounded hover:bg-red-50 text-error" aria-label="Apagar">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </form>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+
+</AdminLayout>

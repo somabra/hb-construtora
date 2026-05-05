@@ -1,7 +1,8 @@
 ---
+const ano = new Date().getFullYear();
 ---
 
-<footer class="bg-[#020015] text-white/60 py-20">
+<footer class="bg-primary-deep text-white/60 py-20">
   <div class="max-w-7xl mx-auto px-8">
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
@@ -14,11 +15,15 @@
       </div>
 
       <div>
-        <h4 class="text-white font-bold mb-6 uppercase text-sm tracking-widest">Links Úteis</h4>
+        <h4 class="text-white font-bold mb-6 uppercase text-sm tracking-widest">Contato</h4>
         <ul class="space-y-3 text-sm">
-          <li><a href="#" class="hover:text-secondary transition-colors underline">Privacidade</a></li>
-          <li><a href="#" class="hover:text-secondary transition-colors underline">Termos</a></li>
-          <li><a href="#" class="hover:text-secondary transition-colors underline">Trabalhe Conosco</a></li>
+          <li>
+            <a href="https://wa.me/5566996752309" target="_blank" rel="noopener noreferrer" class="hover:text-secondary transition-colors">
+              (66) 99675-2309
+            </a>
+          </li>
+          <li>Rua dos Angicos, 1494</li>
+          <li>Jardim Imperial — Sinop, MT</li>
         </ul>
       </div>
 
@@ -46,7 +51,7 @@
     </div>
 
     <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-      <p>© 2026 HB Construtora. Todos os direitos reservados. Sinop-MT.</p>
+      <p>© {ano} HB Construtora. Todos os direitos reservados. Sinop-MT.</p>
       <p>Criado por <span class="text-white font-bold">Somabra Marketing</span></p>
     </div>
 

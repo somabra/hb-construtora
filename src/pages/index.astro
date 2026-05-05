@@ -2,27 +2,35 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import Diferenciais from '../components/Diferenciais.astro';
+import Inss from '../components/Inss.astro';
 import Servicos from '../components/Servicos.astro';
 import Sobre from '../components/Sobre.astro';
 import Galeria from '../components/Galeria.astro';
-import ObraDestaque from '../components/ObraDestaque.astro';
-import Depoimentos from '../components/Depoimentos.astro';
 import Contato from '../components/Contato.astro';
+import FAQ from '../components/FAQ.astro';
 import Footer from '../components/Footer.astro';
 import WhatsappFloat from '../components/WhatsappFloat.astro';
+import { getSections } from '../lib/site-content';
+
+const sections = await getSections();
+const enabled = sections.filter(s => s.enabled);
 ---
 
 <Layout>
   <Header />
   <main>
-    <Contato />
-    <Diferenciais />
-    <Servicos />
-    <Sobre />
-    <Galeria />
-    <ObraDestaque />
-    <Depoimentos />
+    {enabled.map(s => {
+      switch (s.slug) {
+        case 'hero':     return <Hero />;
+        case 'servicos': return <Servicos />;
+        case 'inss':     return <Inss />;
+        case 'galeria':  return <Galeria />;
+        case 'sobre':    return <Sobre />;
+        case 'faq':      return <FAQ />;
+        case 'contato':  return <Contato />;
+        default:         return null;
+      }
+    })}
   </main>
   <Footer />
   <WhatsappFloat />

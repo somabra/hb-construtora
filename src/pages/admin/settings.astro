@@ -1,0 +1,165 @@
+---
+export const prerender = false;
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const supabase = Astro.locals.supabase!;
+const user = Astro.locals.user!;
+
+const { data: rows } = await supabase.from('site_settings').select('key, value');
+const settings: Record<string, any> = {};
+(rows ?? []).forEach(r => { settings[r.key] = r.value; });
+
+const hero    = settings.hero    ?? {};
+const sobre   = settings.sobre   ?? {};
+const wa      = settings.whatsapp ?? {};
+const card    = settings.contato_card ?? {};
+
+const saved = Astro.url.searchParams.get('saved');
+---
+
+<AdminLayout title="Ajustes do Site" user={user}>
+
+  {saved && (
+    <div class="bg-green-50 border border-green-200 text-success rounded-lg px-4 py-3 mb-6 text-sm">
+      ✅ Alterações salvas! Não esqueça de clicar em <strong>Publicar alterações</strong> pra elas aparecerem no site.
+    </div>
+  )}
+
+  <p class="text-gray-600 mb-6 text-sm">Edite os textos e configurações principais do site. Ao salvar, lembre-se de clicar em <strong>Publicar alterações</strong> no topo pra aplicar.</p>
+
+  <!-- VÍDEO INSTITUCIONAL (destaque) -->
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border-2 border-brand-orange p-6 mb-6">
+    <input type="hidden" name="key" value="hero" />
+    <h2 class="font-bold text-primary text-lg flex items-center gap-2 mb-2">
+      <span class="material-symbols-outlined text-brand-orange">smart_display</span>
+      Vídeo institucional do Hero
+    </h2>
+    <p class="text-xs text-gray-500 mb-4">Cole aqui o link do YouTube. Se deixar em branco, mostra o placeholder "Vídeo em breve".</p>
+    <input
+      name="video_url"
+      type="url"
+      placeholder="https://www.youtube.com/watch?v=..."
+      value={hero.video_url ?? ''}
+      class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange"
+    />
+    <input type="hidden" name="eyebrow"     value={hero.eyebrow ?? ''} />
+    <input type="hidden" name="titulo_html" value={hero.titulo_html ?? ''} />
+    <input type="hidden" name="paragrafo"   value={hero.paragrafo ?? ''} />
+    <input type="hidden" name="cta_text"    value={hero.cta_text ?? ''} />
+    <div class="text-right mt-4">
+      <button type="submit" class="bg-orange-gradient text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110">Salvar vídeo</button>
+    </div>
+  </form>
+
+  <!-- HERO TEXTOS -->
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+    <input type="hidden" name="key" value="hero" />
+    <h2 class="font-bold text-primary text-lg mb-4">Textos do Hero (topo do site)</h2>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Tagline (linha laranja)</label>
+        <input name="eyebrow" type="text" value={hero.eyebrow ?? ''} class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Título principal (HTML permitido)</label>
+        <textarea name="titulo_html" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange resize-y font-mono">{hero.titulo_html ?? ''}</textarea>
+        <p class="text-[11px] text-gray-400 mt-1">Use <code>&lt;span class="hl-brush"&gt;palavra&lt;/span&gt;</code> pra destacar com marca-texto.</p>
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Subtítulo (parágrafo)</label>
+        <textarea name="paragrafo" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange resize-y">{hero.paragrafo ?? ''}</textarea>
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Texto do botão WhatsApp</label>
+        <input name="cta_text" type="text" value={hero.cta_text ?? ''} class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+      </div>
+      <input type="hidden" name="video_url" value={hero.video_url ?? ''} />
+    </div>
+    <div class="text-right mt-5">
+      <button type="submit" class="bg-orange-gradient text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110">Salvar Hero</button>
+    </div>
+  </form>
+
+  <!-- SOBRE -->
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+    <input type="hidden" name="key" value="sobre" />
+    <h2 class="font-bold text-primary text-lg mb-4">Sobre a HB</h2>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Tagline</label>
+        <input name="eyebrow" type="text" value={sobre.eyebrow ?? ''} class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Título</label>
+        <input name="titulo" type="text" value={sobre.titulo ?? ''} class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Parágrafos (separe cada um por uma linha em branco)</label>
+        <textarea name="paragrafos" rows="10" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange resize-y">{(sobre.paragrafos ?? []).join('\n\n')}</textarea>
+      </div>
+
+      <div class="pt-4 border-t border-gray-100">
+        <p class="text-xs uppercase tracking-wider text-gray-500 mb-3 font-bold">Estatísticas (4 cards)</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[0, 1, 2, 3].map(i => {
+            const s = (sobre.stats ?? [])[i] ?? { prefix: '', target: 0, suffix: '', label: '' };
+            return (
+              <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                <p class="text-xs font-bold text-gray-500">Stat #{i + 1}</p>
+                <div class="grid grid-cols-3 gap-2">
+                  <input name={`stat_prefix_${i}`} type="text" value={s.prefix ?? ''} placeholder="prefix" class="border border-gray-300 rounded px-2 py-1.5 text-sm" />
+                  <input name={`stat_target_${i}`} type="number" value={s.target ?? 0} placeholder="número" class="border border-gray-300 rounded px-2 py-1.5 text-sm" />
+                  <input name={`stat_suffix_${i}`} type="text" value={s.suffix ?? ''} placeholder="sufixo" class="border border-gray-300 rounded px-2 py-1.5 text-sm" />
+                </div>
+                <input name={`stat_label_${i}`} type="text" value={s.label ?? ''} placeholder="rótulo" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+
+    <div class="text-right mt-5">
+      <button type="submit" class="bg-orange-gradient text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110">Salvar Sobre</button>
+    </div>
+  </form>
+
+  <!-- WHATSAPP -->
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+    <input type="hidden" name="key" value="whatsapp" />
+    <h2 class="font-bold text-primary text-lg mb-4 flex items-center gap-2">
+      <span class="material-symbols-outlined text-success">chat</span>
+      WhatsApp
+    </h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Número (com DDI 55 + DDD)</label>
+        <input name="numero" type="text" value={wa.numero ?? '5566996752309'} class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+        <p class="text-[11px] text-gray-400 mt-1">Ex: <code>5566996752309</code> (sem espaços, parênteses ou traços)</p>
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Mensagem padrão (botões "Falar com o Hemerson")</label>
+        <textarea name="mensagem_default" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange resize-y">{wa.mensagem_default ?? ''}</textarea>
+      </div>
+    </div>
+    <div class="text-right mt-5">
+      <button type="submit" class="bg-orange-gradient text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110">Salvar WhatsApp</button>
+    </div>
+  </form>
+
+  <!-- CARD CONTATO -->
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+    <input type="hidden" name="key" value="contato_card" />
+    <h2 class="font-bold text-primary text-lg mb-4">Card de Contato (título do formulário)</h2>
+    <div>
+      <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Título HTML</label>
+      <textarea name="titulo_html" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange resize-y font-mono">{card.titulo_html ?? ''}</textarea>
+    </div>
+    <div class="text-right mt-5">
+      <button type="submit" class="bg-orange-gradient text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110">Salvar título</button>
+    </div>
+  </form>
+
+</AdminLayout>
