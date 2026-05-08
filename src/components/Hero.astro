@@ -104,28 +104,28 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
   {isMp4 && (
     <div
       id="hero-video-modal"
-      class="fixed inset-0 z-[80] hidden items-center justify-center px-5 py-8"
+      class="fixed inset-0 z-[80] hidden items-center justify-center px-5 py-8 opacity-0 transition-opacity duration-300"
       role="dialog"
       aria-modal="true"
       aria-labelledby="hero-video-modal-title"
     >
-      <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" data-modal-overlay></div>
+      <div class="absolute inset-0 bg-primary/70 backdrop-blur-md" data-modal-overlay></div>
 
-      <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl px-7 py-8 md:px-9 md:py-10 text-center">
+      <div class="relative w-full max-w-md bg-primary-container/80 backdrop-blur-md rounded-2xl shadow-2xl px-7 py-8 md:px-9 md:py-10 text-center border border-white/10">
         <button
           type="button"
           data-modal-close
           aria-label="Fechar"
-          class="absolute top-3 right-3 w-9 h-9 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center text-2xl leading-none transition-colors"
+          class="absolute top-3 right-3 w-9 h-9 rounded-full text-white/60 hover:text-white hover:bg-white/10 flex items-center justify-center text-2xl leading-none transition-colors"
         >×</button>
 
         <span class="text-brand-orange font-bold tracking-[0.3em] uppercase text-[11px] block mb-3">Próximo passo</span>
 
-        <h3 id="hero-video-modal-title" class="font-headline text-2xl md:text-3xl font-bold text-primary leading-tight">
+        <h3 id="hero-video-modal-title" class="font-headline text-2xl md:text-3xl font-bold text-white leading-tight">
           Pronto para dar o próximo passo na sua obra?
         </h3>
 
-        <p class="mt-4 text-gray-600 text-sm leading-relaxed">
+        <p class="mt-4 text-white/70 text-sm leading-relaxed">
           Fale direto com o Hemerson e tire suas dúvidas. Atendimento personalizado pra cada projeto.
         </p>
 
@@ -155,14 +155,22 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         document.body.style.overflow = 'hidden';
+        requestAnimationFrame(function () {
+          modal.classList.remove('opacity-0');
+        });
       }
       function closeModal() {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = '';
+        modal.classList.add('opacity-0');
+        setTimeout(function () {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          document.body.style.overflow = '';
+        }, 280);
       }
 
-      video.addEventListener('ended', openModal);
+      video.addEventListener('ended', function () {
+        setTimeout(openModal, 700);
+      });
 
       modal.querySelectorAll('[data-modal-close], [data-modal-overlay]').forEach(function (el) {
         el.addEventListener('click', closeModal);
