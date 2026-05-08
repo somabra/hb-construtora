@@ -207,18 +207,21 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
       });
 
-      // Autoplay quando entra no viewport (mobile-friendly)
+      // Autoplay só quando o vídeo está praticamente todo visível.
+      // Mobile: 90% (vídeo precisa estar completo na tela). Desktop: 50% basta.
       if ('IntersectionObserver' in window) {
+        var isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+        var PLAY_RATIO = isDesktop ? 0.5 : 0.9;
         var io = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
-            if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+            if (entry.isIntersecting && entry.intersectionRatio >= PLAY_RATIO) {
               var p = video.play();
               if (p && p.catch) p.catch(function () { /* autoplay bloqueado */ });
             } else if (!entry.isIntersecting && !video.paused) {
               video.pause();
             }
           });
-        }, { threshold: [0, 0.4, 0.6] });
+        }, { threshold: [0, 0.5, 0.85, 0.9, 0.95, 1] });
         io.observe(video);
       } else {
         var p = video.play();
