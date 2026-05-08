@@ -1,6 +1,7 @@
 ---
 import WhatsappIcon from './WhatsappIcon.astro';
 import { getSetting } from '../lib/site-content';
+import { resolveImg } from '../lib/site-content';
 
 interface HeroData { eyebrow: string; titulo_html: string; paragrafo: string; video_url: string; cta_text: string; }
 interface WaData   { numero: string; mensagem_default: string; }
@@ -10,16 +11,19 @@ const wa   = (await getSetting<WaData>('whatsapp')) ?? { numero: '5566996752309'
 
 const waHref = `https://wa.me/${wa.numero}?text=${encodeURIComponent(wa.mensagem_default)}`;
 
-// Converte qualquer URL de YouTube pro embed
 function ytEmbed(url: string): string | null {
   if (!url) return null;
   const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
-  return m ? `https://www.youtube.com/embed/${m[1]}` : null;
+  return m ? `https://www.youtube.com/embed/${m[1]}?rel=0&modestbranding=1` : null;
 }
-const videoEmbed = ytEmbed(hero.video_url);
+
+const raw = (hero.video_url ?? '').trim();
+const videoEmbed = ytEmbed(raw);
+const isMp4 = !!raw && !videoEmbed;
+const mp4Src = isMp4 ? resolveImg(raw) : '';
 ---
 
-<section id="home" class="relative overflow-hidden pt-32 pb-20 md:pt-40 md:pb-28">
+<section id="home" class="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">
 
   <div class="absolute inset-0 overflow-hidden">
     <video
@@ -33,49 +37,152 @@ const videoEmbed = ytEmbed(hero.video_url);
       preload="metadata"
       aria-hidden="true"
     ></video>
-    <div class="absolute inset-0 bg-primary/80"></div>
+    <div class="absolute inset-0 bg-primary/85"></div>
   </div>
 
-  <div class="relative max-w-4xl mx-auto px-6 md:px-10 flex flex-col items-center text-center">
-    <span class="text-brand-orange font-bold tracking-[0.3em] uppercase text-xs mb-5 block">{hero.eyebrow}</span>
+  <div class="relative max-w-6xl mx-auto px-6 md:px-10">
+    <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_auto] gap-10 lg:gap-14 items-center">
 
-    <h1 class="font-headline text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight" set:html={hero.titulo_html}></h1>
+      <div class="text-center lg:text-left">
+        <span class="text-brand-orange font-bold tracking-[0.3em] uppercase text-xs mb-5 block">{hero.eyebrow}</span>
 
-    <p class="mt-6 md:mt-8 text-white/70 leading-relaxed text-base md:text-lg max-w-2xl">
-      {hero.paragrafo}
-    </p>
+        <h1 class="font-headline text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.05] tracking-tight" set:html={hero.titulo_html}></h1>
 
-    <div class="relative aspect-video w-full max-w-3xl mt-10 md:mt-12 rounded-2xl overflow-hidden border border-white/10 bg-primary-container/80 backdrop-blur-md shadow-2xl">
-      {videoEmbed ? (
-        <iframe
-          class="absolute inset-0 w-full h-full"
-          src={videoEmbed}
-          title="Vídeo institucional HB Construtora"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
-      ) : (
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-white/40">
-          <div class="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
-            <svg class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-          <span class="text-xs uppercase tracking-[0.3em]">Vídeo em breve</span>
+        <p class="mt-6 text-white/75 leading-relaxed text-base md:text-lg max-w-xl mx-auto lg:mx-0">
+          {hero.paragrafo}
+        </p>
+
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener"
+          class="mt-8 inline-flex items-center gap-3 bg-whatsapp-gradient text-white px-8 sm:px-10 py-3.5 md:py-4 text-sm md:text-base font-bold uppercase tracking-wider whitespace-nowrap hover:brightness-110 transition-all rounded-lg shadow-lg shadow-green-900/30"
+        >
+          <WhatsappIcon class="w-5 h-5 flex-shrink-0" />
+          {hero.cta_text}
+        </a>
+      </div>
+
+      <div class="mx-auto lg:mx-0 w-full max-w-[320px] sm:max-w-[360px] lg:w-[360px]">
+        <div class="relative aspect-[9/16] rounded-3xl overflow-hidden border border-white/10 bg-primary-container/80 backdrop-blur-md shadow-2xl">
+          {videoEmbed && (
+            <iframe
+              class="absolute inset-0 w-full h-full"
+              src={videoEmbed}
+              title="Vídeo institucional HB Construtora"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          )}
+          {isMp4 && (
+            <video
+              id="hero-video"
+              class="absolute inset-0 w-full h-full object-cover"
+              src={mp4Src}
+              controls
+              playsinline
+              preload="metadata"
+            ></video>
+          )}
+          {!videoEmbed && !isMp4 && (
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-white/40 px-6 text-center">
+              <div class="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              <span class="text-xs uppercase tracking-[0.3em]">Vídeo em breve</span>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
 
-    <a
-      href={waHref}
-      target="_blank"
-      rel="noopener"
-      class="mt-8 md:mt-10 inline-flex items-center gap-3 bg-whatsapp-gradient text-white px-8 sm:px-10 py-3.5 md:py-4 text-sm md:text-base font-bold uppercase tracking-wider whitespace-nowrap hover:brightness-110 transition-all rounded-lg shadow-lg shadow-green-900/30"
-    >
-      <WhatsappIcon class="w-5 h-5 flex-shrink-0" />
-      {hero.cta_text}
-    </a>
+    </div>
   </div>
+
+  {isMp4 && (
+    <div
+      id="hero-video-modal"
+      class="fixed inset-0 z-[80] hidden items-center justify-center px-5 py-8"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hero-video-modal-title"
+    >
+      <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" data-modal-overlay></div>
+
+      <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl px-7 py-8 md:px-9 md:py-10 text-center">
+        <button
+          type="button"
+          data-modal-close
+          aria-label="Fechar"
+          class="absolute top-3 right-3 w-9 h-9 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center text-2xl leading-none transition-colors"
+        >×</button>
+
+        <span class="text-brand-orange font-bold tracking-[0.3em] uppercase text-[11px] block mb-3">Próximo passo</span>
+
+        <h3 id="hero-video-modal-title" class="font-headline text-2xl md:text-3xl font-bold text-primary leading-tight">
+          Pronto para dar o próximo passo na sua obra?
+        </h3>
+
+        <p class="mt-4 text-gray-600 text-sm leading-relaxed">
+          Fale direto com o Hemerson e tire suas dúvidas. Atendimento personalizado pra cada projeto.
+        </p>
+
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener"
+          class="hero-video-cta mt-7 inline-flex items-center gap-3 bg-whatsapp-gradient text-white px-8 py-4 text-sm md:text-base font-bold uppercase tracking-wider hover:brightness-110 transition-all rounded-xl shadow-lg shadow-green-900/30"
+        >
+          <WhatsappIcon class="w-5 h-5 flex-shrink-0" />
+          Falar com o Hemerson
+        </a>
+      </div>
+    </div>
+  )}
 
 </section>
+
+{isMp4 && (
+  <script is:inline>
+    (function () {
+      const video = document.getElementById('hero-video');
+      const modal = document.getElementById('hero-video-modal');
+      if (!video || !modal) return;
+
+      function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+
+      video.addEventListener('ended', openModal);
+
+      modal.querySelectorAll('[data-modal-close], [data-modal-overlay]').forEach(function (el) {
+        el.addEventListener('click', closeModal);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+      });
+    })();
+  </script>
+)}
+
+<style>
+  .hero-video-cta {
+    animation: hero-cta-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes hero-cta-pulse {
+    0%, 100% { transform: scale(1);    box-shadow: 0 10px 25px -5px rgba(20,83,45,0.35); }
+    50%      { transform: scale(1.04); box-shadow: 0 14px 32px -4px rgba(20,83,45,0.55); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-video-cta { animation: none; }
+  }
+</style>

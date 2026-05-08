@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import VideoUploader from '../../components/admin/VideoUploader.tsx';
 
 const supabase = Astro.locals.supabase!;
 const user = Astro.locals.user!;
@@ -13,6 +14,8 @@ const hero    = settings.hero    ?? {};
 const sobre   = settings.sobre   ?? {};
 const wa      = settings.whatsapp ?? {};
 const card    = settings.contato_card ?? {};
+
+const STORAGE_PUBLIC_URL = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public/site-media/`;
 
 const saved = Astro.url.searchParams.get('saved');
 ---
@@ -34,14 +37,33 @@ const saved = Astro.url.searchParams.get('saved');
       <span class="material-symbols-outlined text-brand-orange">smart_display</span>
       Vídeo institucional do Hero
     </h2>
-    <p class="text-xs text-gray-500 mb-4">Cole aqui o link do YouTube. Se deixar em branco, mostra o placeholder "Vídeo em breve".</p>
-    <input
-      name="video_url"
-      type="url"
-      placeholder="https://www.youtube.com/watch?v=..."
-      value={hero.video_url ?? ''}
-      class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange"
-    />
+    <p class="text-xs text-gray-500 mb-4">
+      Suba o vídeo vertical do Hemerson (formato 9:16, MP4 até 60MB). Também aceita link do YouTube — basta colar a URL no campo abaixo. Deixe ambos em branco pra mostrar o placeholder "Vídeo em breve".
+    </p>
+
+    <div class="mb-5">
+      <label class="block text-xs uppercase tracking-wider text-gray-500 mb-2 font-bold">Vídeo (upload direto)</label>
+      <VideoUploader
+        client:load
+        name="video_path"
+        initial={hero.video_url && !hero.video_url.startsWith('http') ? hero.video_url : ''}
+        folder="hero"
+        storagePublicUrl={STORAGE_PUBLIC_URL}
+      />
+    </div>
+
+    <div class="pt-4 border-t border-gray-100">
+      <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5 font-bold">Ou link externo (YouTube)</label>
+      <input
+        name="video_url_external"
+        type="url"
+        placeholder="https://www.youtube.com/watch?v=..."
+        value={hero.video_url && hero.video_url.startsWith('http') ? hero.video_url : ''}
+        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange"
+      />
+      <p class="text-[11px] text-gray-400 mt-1">Se preenchido, prevalece sobre o upload acima.</p>
+    </div>
+
     <input type="hidden" name="eyebrow"     value={hero.eyebrow ?? ''} />
     <input type="hidden" name="titulo_html" value={hero.titulo_html ?? ''} />
     <input type="hidden" name="paragrafo"   value={hero.paragrafo ?? ''} />

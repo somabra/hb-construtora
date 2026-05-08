@@ -12,15 +12,20 @@ export const POST: APIRoute = async ({ request, locals }) => {
   let value: Record<string, unknown> | unknown[] | null = null;
 
   switch (key) {
-    case 'hero':
+    case 'hero': {
+      const externalUrl = String(form.get('video_url_external') ?? '').trim();
+      const uploadedPath = String(form.get('video_path') ?? '').trim();
+      const legacy = String(form.get('video_url') ?? '').trim();
+      const videoUrl = externalUrl || uploadedPath || legacy;
       value = {
         eyebrow:     String(form.get('eyebrow') ?? ''),
         titulo_html: String(form.get('titulo_html') ?? ''),
         paragrafo:   String(form.get('paragrafo') ?? ''),
-        video_url:   String(form.get('video_url') ?? ''),
+        video_url:   videoUrl,
         cta_text:    String(form.get('cta_text') ?? ''),
       };
       break;
+    }
 
     case 'sobre': {
       const paragrafosTexto = String(form.get('paragrafos') ?? '');
