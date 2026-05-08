@@ -46,9 +46,9 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
       <div class="text-center lg:text-left">
         <span class="text-brand-orange font-bold tracking-[0.3em] uppercase text-xs mb-5 block">{hero.eyebrow}</span>
 
-        <h1 class="font-headline text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.05] tracking-tight" set:html={hero.titulo_html}></h1>
+        <h1 class="font-headline text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.05] tracking-tight [text-wrap:balance]" set:html={hero.titulo_html}></h1>
 
-        <p class="mt-6 text-white/75 leading-relaxed text-base md:text-lg max-w-xl mx-auto lg:mx-0">
+        <p class="mt-6 text-white/75 leading-relaxed text-base md:text-lg max-w-xl mx-auto lg:mx-0 [text-wrap:pretty]">
           {hero.paragrafo}
         </p>
       </div>
