@@ -84,7 +84,6 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
                 controls
                 playsinline
                 muted
-                autoplay
                 preload="auto"
               ></video>
               <button
@@ -224,8 +223,9 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
         var hasInteracted = isDesktop;
         if (!isDesktop) {
           function markInteraction() { hasInteracted = true; }
-          window.addEventListener('scroll',  markInteraction, { once: true, passive: true });
-          window.addEventListener('touchmove', markInteraction, { once: true, passive: true });
+          // Toque direto na tela — sinal confiável, não dispara em scroll do browser ou address bar
+          window.addEventListener('touchstart',  markInteraction, { once: true, passive: true });
+          window.addEventListener('pointerdown', markInteraction, { once: true, passive: true });
         }
 
         var minRatio = isDesktop ? 0.5 : 0.95;
