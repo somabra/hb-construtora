@@ -207,25 +207,45 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
       });
 
-      // Autoplay só quando o vídeo está praticamente todo visível.
-      // Mobile: 90% (vídeo precisa estar completo na tela). Desktop: 50% basta.
-      if ('IntersectionObserver' in window) {
-        var isDesktop = window.matchMedia('(min-width: 1024px)').matches;
-        var PLAY_RATIO = isDesktop ? 0.5 : 0.9;
-        var io = new IntersectionObserver(function (entries) {
+      // Mobile: só toca depois que o user rolou E o vídeo está quase todo visível.
+      // Desktop: toca direto quando o vídeo entra no viewport (já aparece junto do texto).
+      var isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+
+      if (isDesktop) {
+        if ('IntersectionObserver' in window) {
+          var ioDesktop = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+                var p = video.play();
+                if (p && p.catch) p.catch(function () {});
+              } else if (!entry.isIntersecting && !video.paused) {
+                video.pause();
+              }
+            });
+          }, { threshold: [0, 0.5, 0.9] });
+          ioDesktop.observe(video);
+        } else {
+          var p = video.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+      } else if ('IntersectionObserver' in window) {
+        var hasInteracted = false;
+        function markInteraction() { hasInteracted = true; }
+        window.addEventListener('scroll',  markInteraction, { once: true, passive: true });
+        window.addEventListener('touchmove', markInteraction, { once: true, passive: true });
+
+        var ioMobile = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
-            if (entry.isIntersecting && entry.intersectionRatio >= PLAY_RATIO) {
+            if (!hasInteracted) return;
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.95) {
               var p = video.play();
-              if (p && p.catch) p.catch(function () { /* autoplay bloqueado */ });
+              if (p && p.catch) p.catch(function () {});
             } else if (!entry.isIntersecting && !video.paused) {
               video.pause();
             }
           });
-        }, { threshold: [0, 0.5, 0.85, 0.9, 0.95, 1] });
-        io.observe(video);
-      } else {
-        var p = video.play();
-        if (p && p.catch) p.catch(function () {});
+        }, { threshold: [0, 0.5, 0.9, 0.95, 1] });
+        ioMobile.observe(video);
       }
 
       // Botão "Ativar som"
