@@ -76,14 +76,29 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
             ></iframe>
           )}
           {isMp4 && (
-            <video
-              id="hero-video"
-              class="absolute inset-0 w-full h-full object-cover"
-              src={mp4Src}
-              controls
-              playsinline
-              preload="metadata"
-            ></video>
+            <>
+              <video
+                id="hero-video"
+                class="absolute inset-0 w-full h-full object-cover"
+                src={mp4Src}
+                controls
+                playsinline
+                muted
+                autoplay
+                preload="auto"
+              ></video>
+              <button
+                id="hero-video-unmute"
+                type="button"
+                aria-label="Ativar som"
+                class="absolute bottom-14 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 bg-black/55 hover:bg-black/75 backdrop-blur-sm text-white px-4 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider shadow-lg transition-colors"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM3 9v6h4l5 5V4L7 9H3zm6-.17v6.34L7.83 14H5v-4h2.83L9 8.83z"/>
+                </svg>
+                Ativar som
+              </button>
+            </>
           )}
           {!videoEmbed && !isMp4 && (
             <div class="absolute inset-0 flex flex-col items-center justify-center text-white/40 px-6 text-center">
@@ -147,8 +162,9 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
 {isMp4 && (
   <script is:inline>
     (function () {
-      const video = document.getElementById('hero-video');
-      const modal = document.getElementById('hero-video-modal');
+      var video = document.getElementById('hero-video');
+      var modal = document.getElementById('hero-video-modal');
+      var unmuteBtn = document.getElementById('hero-video-unmute');
       if (!video || !modal) return;
 
       function openModal() {
@@ -178,6 +194,44 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
       });
+
+      // Autoplay quando entra no viewport (mobile-friendly)
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+              var p = video.play();
+              if (p && p.catch) p.catch(function () { /* autoplay bloqueado */ });
+            } else if (!entry.isIntersecting && !video.paused) {
+              video.pause();
+            }
+          });
+        }, { threshold: [0, 0.4, 0.6] });
+        io.observe(video);
+      } else {
+        var p = video.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+
+      // Botão "Ativar som"
+      if (unmuteBtn) {
+        function syncUnmuteVisibility() {
+          if (video.muted || video.volume === 0) {
+            unmuteBtn.classList.remove('hidden');
+          } else {
+            unmuteBtn.classList.add('hidden');
+          }
+        }
+        unmuteBtn.addEventListener('click', function () {
+          video.muted = false;
+          if (video.volume === 0) video.volume = 1;
+          var p = video.play();
+          if (p && p.catch) p.catch(function () {});
+          syncUnmuteVisibility();
+        });
+        video.addEventListener('volumechange', syncUnmuteVisibility);
+        syncUnmuteVisibility();
+      }
     })();
   </script>
 )}
