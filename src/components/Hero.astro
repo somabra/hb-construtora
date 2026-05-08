@@ -207,45 +207,40 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
       });
 
-      // Mobile: só toca depois que o user rolou E o vídeo está quase todo visível.
-      // Desktop: toca direto quando o vídeo entra no viewport (já aparece junto do texto).
+      // Autoplay roda UMA vez por carregamento. Se o user subir de novo, não dispara.
+      // Mobile: precisa do user ter rolado + vídeo 95% visível.
+      // Desktop: dispara quando o vídeo entra no viewport (já aparece junto do texto).
       var isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+      var hasAutoPlayed = false;
 
-      if (isDesktop) {
-        if ('IntersectionObserver' in window) {
-          var ioDesktop = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-              if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-                var p = video.play();
-                if (p && p.catch) p.catch(function () {});
-              } else if (!entry.isIntersecting && !video.paused) {
-                video.pause();
-              }
-            });
-          }, { threshold: [0, 0.5, 0.9] });
-          ioDesktop.observe(video);
-        } else {
-          var p = video.play();
-          if (p && p.catch) p.catch(function () {});
+      function tryAutoPlay() {
+        if (hasAutoPlayed) return;
+        hasAutoPlayed = true;
+        var p = video.play();
+        if (p && p.catch) p.catch(function () { /* autoplay bloqueado */ });
+      }
+
+      if ('IntersectionObserver' in window) {
+        var hasInteracted = isDesktop;
+        if (!isDesktop) {
+          function markInteraction() { hasInteracted = true; }
+          window.addEventListener('scroll',  markInteraction, { once: true, passive: true });
+          window.addEventListener('touchmove', markInteraction, { once: true, passive: true });
         }
-      } else if ('IntersectionObserver' in window) {
-        var hasInteracted = false;
-        function markInteraction() { hasInteracted = true; }
-        window.addEventListener('scroll',  markInteraction, { once: true, passive: true });
-        window.addEventListener('touchmove', markInteraction, { once: true, passive: true });
 
-        var ioMobile = new IntersectionObserver(function (entries) {
+        var minRatio = isDesktop ? 0.5 : 0.95;
+        var io = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
-            if (!hasInteracted) return;
-            if (entry.isIntersecting && entry.intersectionRatio >= 0.95) {
-              var p = video.play();
-              if (p && p.catch) p.catch(function () {});
-            } else if (!entry.isIntersecting && !video.paused) {
+            if (!hasAutoPlayed && hasInteracted && entry.isIntersecting && entry.intersectionRatio >= minRatio) {
+              tryAutoPlay();
+            } else if (!entry.isIntersecting && !video.paused && !video.ended) {
               video.pause();
             }
           });
         }, { threshold: [0, 0.5, 0.9, 0.95, 1] });
-        ioMobile.observe(video);
+        io.observe(video);
+      } else if (isDesktop) {
+        tryAutoPlay();
       }
 
       // Botão "Ativar som"
