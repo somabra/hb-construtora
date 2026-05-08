@@ -51,20 +51,10 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
         <p class="mt-6 text-white/75 leading-relaxed text-base md:text-lg max-w-xl mx-auto lg:mx-0">
           {hero.paragrafo}
         </p>
-
-        <a
-          href={waHref}
-          target="_blank"
-          rel="noopener"
-          class="hidden lg:inline-flex mt-8 items-center gap-3 bg-whatsapp-gradient text-white px-8 sm:px-10 py-3.5 md:py-4 text-sm md:text-base font-bold uppercase tracking-wider whitespace-nowrap hover:brightness-110 transition-all rounded-lg shadow-lg shadow-green-900/30"
-        >
-          <WhatsappIcon class="w-5 h-5 flex-shrink-0" />
-          {hero.cta_text}
-        </a>
       </div>
 
-      <div class="mx-auto lg:mx-0 w-full max-w-[320px] sm:max-w-[360px] lg:w-[360px]">
-        <div id="hero-video-frame" class="relative aspect-[9/16] rounded-3xl overflow-hidden border border-white/10 bg-primary-container/80 backdrop-blur-md shadow-2xl">
+      <div class="flex flex-col items-center gap-6 mx-auto lg:mx-0 w-full max-w-[320px] sm:max-w-[360px] lg:w-[360px]">
+        <div id="hero-video-frame" class="relative w-full aspect-[9/16] rounded-3xl overflow-hidden border border-white/10 bg-primary-container/80 backdrop-blur-md shadow-2xl">
           {videoEmbed && (
             <iframe
               class="absolute inset-0 w-full h-full"
@@ -110,14 +100,12 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
             </div>
           )}
         </div>
-      </div>
 
-      <div class="lg:hidden text-center">
         <a
           href={waHref}
           target="_blank"
           rel="noopener"
-          class="hero-cta-mobile inline-flex items-center gap-3 bg-whatsapp-gradient text-white px-10 py-4 text-sm font-bold uppercase tracking-wider whitespace-nowrap hover:brightness-110 transition-all rounded-lg shadow-lg shadow-green-900/30"
+          class="inline-flex items-center gap-3 bg-whatsapp-gradient text-white px-10 py-4 text-sm font-bold uppercase tracking-wider whitespace-nowrap hover:brightness-110 transition-all rounded-lg shadow-lg shadow-green-900/30"
         >
           <WhatsappIcon class="w-5 h-5 flex-shrink-0" />
           {hero.cta_text}
