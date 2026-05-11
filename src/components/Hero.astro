@@ -265,4 +265,14 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
   @media (prefers-reduced-motion: reduce) {
     .hero-video-cta { animation: none; }
   }
+
+  /* Em fullscreen, troca object-cover por contain para manter o formato vertical
+     sem cortar topo/bottom. Fundo preto preenche as laterais (estilo YouTube retrato). */
+  #hero-video:fullscreen,
+  #hero-video:-webkit-full-screen {
+    object-fit: contain !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #000;
+  }
 </style>
