@@ -15,19 +15,9 @@ const obrasClient = obras.map(o => ({
 <section id="galeria" class="py-24 bg-white overflow-hidden">
   <div class="max-w-7xl mx-auto px-8">
 
-    <div class="flex flex-col md:flex-row md:justify-between md:items-end items-start mb-12 gap-8">
-      <div>
-        <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-4 block">Portfólio</span>
-        <h2 class="font-headline text-4xl md:text-5xl font-bold text-primary">Obras Entregues</h2>
-      </div>
-      <div class="hidden md:flex gap-3">
-        <button class="prev-btn w-11 h-11 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all" aria-label="Anterior">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-        </button>
-        <button class="next-btn w-11 h-11 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all" aria-label="Próximo">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-        </button>
-      </div>
+    <div class="mb-12">
+      <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-4 block">Portfólio</span>
+      <h2 class="font-headline text-4xl md:text-5xl font-bold text-primary">Obras Entregues</h2>
     </div>
 
     <div class="relative">
@@ -71,10 +61,10 @@ const obrasClient = obras.map(o => ({
         </div>
       </div>
 
-      <button class="prev-btn md:hidden absolute left-2 top-[37.5%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm border border-primary/20 flex items-center justify-center shadow-lg text-primary hover:bg-primary hover:text-white transition-all z-10" aria-label="Anterior">
+      <button class="prev-btn absolute left-2 md:-left-5 top-[37.5%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all z-10" aria-label="Anterior">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
       </button>
-      <button class="next-btn md:hidden absolute right-2 top-[37.5%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm border border-primary/20 flex items-center justify-center shadow-lg text-primary hover:bg-primary hover:text-white transition-all z-10" aria-label="Próximo">
+      <button class="next-btn absolute right-2 md:-right-5 top-[37.5%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all z-10" aria-label="Próximo">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </button>
     </div>
