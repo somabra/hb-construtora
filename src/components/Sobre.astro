@@ -12,13 +12,34 @@ const sobre = (await getSetting<SobreData>('sobre')) ?? {
 };
 ---
 
-<section id="sobre" class="bg-surface rounded-t-3xl -mt-8 relative z-10" style="padding-top: 4rem; padding-bottom: 0;">
-  <div class="max-w-4xl mx-auto px-8 text-center">
-    <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-4 block">{sobre.eyebrow}</span>
-    <h2 class="font-headline text-3xl md:text-5xl font-bold text-primary mb-6 leading-tight">{sobre.titulo}</h2>
+<section id="sobre" class="bg-surface rounded-t-3xl -mt-8 relative z-10 overflow-hidden" style="padding-top: 4rem; padding-bottom: 0;">
 
-    <div class="text-on-surface-variant leading-relaxed text-sm md:text-base max-w-2xl mx-auto space-y-4">
-      {sobre.paragrafos.map(p => <p>{p}</p>)}
+  <div class="max-w-6xl mx-auto px-6 md:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-14 items-end">
+
+      <div class="text-center lg:text-left order-2 lg:order-1">
+        <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-4 block">{sobre.eyebrow}</span>
+        <h2 class="font-headline text-3xl md:text-5xl font-bold text-primary mb-6 leading-tight">{sobre.titulo}</h2>
+
+        <div class="text-on-surface-variant leading-relaxed text-sm md:text-base space-y-4 max-w-2xl mx-auto lg:mx-0">
+          {sobre.paragrafos.map(p => <p>{p}</p>)}
+        </div>
+      </div>
+
+      <div class="order-1 lg:order-2 relative">
+        <div class="relative max-w-[340px] sm:max-w-sm lg:max-w-none mx-auto">
+          <div class="absolute -inset-x-4 bottom-0 h-2/3 bg-gradient-to-t from-brand-orange/10 to-transparent rounded-3xl pointer-events-none" aria-hidden="true"></div>
+          <img
+            src="/sobre/hemerson-retrato.webp"
+            alt="Hemerson Borges, fundador da HB Construtora"
+            class="relative w-full h-auto block"
+            loading="lazy"
+            width="900"
+            height="1293"
+          />
+        </div>
+      </div>
+
     </div>
   </div>
 
