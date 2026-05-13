@@ -426,10 +426,13 @@ const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { ti
       if ((window as any).turnstile) (window as any).turnstile.reset();
     }
 
-    const win = window.open(waUrl, '_blank', 'noopener');
-    if (!win) {
-      window.location.href = waUrl;
-    }
+    const a = document.createElement('a');
+    a.href = waUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
 
     submitBtn.disabled = false;
   });
