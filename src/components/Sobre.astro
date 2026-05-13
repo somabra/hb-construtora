@@ -32,6 +32,8 @@ const sobre = (await getSetting<SobreData>('sobre')) ?? {
           height="1293"
         />
 
+        <div class="lg:hidden border-t border-primary/10 mb-6 -mx-6 md:-mx-8" aria-hidden="true"></div>
+
         <div class="text-on-surface-variant leading-relaxed text-sm md:text-base space-y-4 max-w-2xl mx-auto lg:mx-0">
           {sobre.paragrafos.map(p => <p>{p}</p>)}
         </div>
