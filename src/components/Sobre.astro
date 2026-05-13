@@ -30,8 +30,10 @@ const sobre = (await getSetting<SobreData>('sobre')) ?? {
         <img
           src="/sobre/hemerson-retrato.webp"
           alt="Hemerson Borges, fundador da HB Construtora"
-          class="w-full h-auto block max-w-[200px] sm:max-w-[220px] lg:max-w-[300px] mx-auto"
+          class="w-full h-auto block max-w-[200px] sm:max-w-[220px] lg:max-w-[300px] mx-auto select-none pointer-events-none [-webkit-user-drag:none]"
           loading="lazy"
+          draggable="false"
+          oncontextmenu="return false"
           width="900"
           height="1293"
         />
