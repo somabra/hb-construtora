@@ -65,6 +65,13 @@ const slides = (await getSetting<Slide[]>('inss_slides')) ?? [];
     timer = setInterval(next, 6000);
   }
 
+  function pause() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+
   dots.forEach((d, i) => {
     d.addEventListener('click', () => {
       go(i);
@@ -72,7 +79,7 @@ const slides = (await getSetting<Slide[]>('inss_slides')) ?? [];
     });
   });
 
-  // Swipe (mobile e qualquer tela touch)
+  // Swipe + hold-to-pause (estilo stories Instagram)
   const slider = document.getElementById('inss-slider');
   if (slider && slides.length > 1) {
     let startX = 0;
@@ -85,6 +92,7 @@ const slides = (await getSetting<Slide[]>('inss_slides')) ?? [];
       startX = t.clientX;
       startY = t.clientY;
       tracking = true;
+      pause();
     }, { passive: true });
 
     slider.addEventListener('touchend', (e) => {
@@ -93,14 +101,21 @@ const slides = (await getSetting<Slide[]>('inss_slides')) ?? [];
       const t = e.changedTouches[0];
       const dx = t.clientX - startX;
       const dy = t.clientY - startY;
-      if (Math.abs(dx) < THRESHOLD || Math.abs(dx) < Math.abs(dy)) return;
-      if (dx < 0) {
-        go((current + 1) % slides.length);
-      } else {
-        go((current - 1 + slides.length) % slides.length);
+      if (Math.abs(dx) >= THRESHOLD && Math.abs(dx) >= Math.abs(dy)) {
+        if (dx < 0) go((current + 1) % slides.length);
+        else        go((current - 1 + slides.length) % slides.length);
       }
       start();
     }, { passive: true });
+
+    slider.addEventListener('touchcancel', () => {
+      tracking = false;
+      start();
+    }, { passive: true });
+
+    slider.addEventListener('mousedown', pause);
+    slider.addEventListener('mouseup', start);
+    slider.addEventListener('mouseleave', start);
   }
 
   if (slides.length > 1) start();
