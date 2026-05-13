@@ -3,11 +3,18 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createSupabaseServerClient } from '../../../lib/supabase-server';
 
+function safeNext(raw: string): string {
+  if (!raw.startsWith('/')) return '/admin';
+  if (raw.startsWith('//') || raw.startsWith('/\\')) return '/admin';
+  if (!raw.startsWith('/admin')) return '/admin';
+  return raw;
+}
+
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const form = await request.formData();
   const email = String(form.get('email') ?? '');
   const password = String(form.get('password') ?? '');
-  const next = String(form.get('next') ?? '/admin');
+  const next = safeNext(String(form.get('next') ?? '/admin'));
 
   const supabase = createSupabaseServerClient(cookies, request.headers);
   const { error } = await supabase.auth.signInWithPassword({ email, password });

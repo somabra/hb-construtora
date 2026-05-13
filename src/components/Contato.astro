@@ -1,5 +1,6 @@
 ---
 import { getSetting } from '../lib/site-content';
+import { sanitizeRichText } from '../lib/sanitize';
 const TURNSTILE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 const wa = (await getSetting<{ numero: string; mensagem_default: string }>('whatsapp')) ?? { numero: '5566996752309', mensagem_default: '' };
 const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { titulo_html: 'Fale com a HB Construtora' };
@@ -26,7 +27,7 @@ const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { ti
   <div class="relative max-w-4xl mx-auto px-6 md:px-10">
 
     <div id="contato" class="scroll-mt-24 max-w-2xl mx-auto bg-primary-container/80 backdrop-blur-md rounded-2xl p-8 md:p-10 border border-white/10 shadow-2xl">
-      <h3 class="font-headline text-3xl font-bold text-white mb-6 text-center md:uppercase md:whitespace-nowrap" set:html={card.titulo_html}></h3>
+      <h3 class="font-headline text-3xl font-bold text-white mb-6 text-center md:uppercase md:whitespace-nowrap" set:html={sanitizeRichText(card.titulo_html)}></h3>
       <input type="hidden" id="wa-numero" value={wa.numero} />
 
       <form id="lead-form" class="space-y-4" novalidate>
@@ -181,8 +182,6 @@ const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { ti
 )}
 
 <script>
-  import { supabase } from '../lib/supabase';
-
   // ---------- Helpers ----------
   function setError(field: string, msg: string) {
     const el = document.getElementById(`erro-${field}`);
@@ -345,10 +344,11 @@ const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { ti
 
   form.addEventListener('submit', async (e: Event) => {
     e.preventDefault();
+    if (submitBtn.disabled) return;
+
     const data     = new FormData(form);
     const honeypot = (data.get('website') as string) || '';
     if (honeypot) {
-      // Bot detectado — ignora silenciosamente
       showStatus('Enviado!', 'success');
       return;
     }
@@ -375,13 +375,33 @@ const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { ti
       etapa,
     };
 
-    const { error } = await supabase.from('leads').insert(lead);
-    if (error) {
-      console.error('Supabase insert error:', error);
-      showStatus('Não foi possível registrar agora, mas vamos te direcionar pro WhatsApp.', 'error');
+    const turnstileToken = (form.querySelector('[name="cf-turnstile-response"]') as HTMLInputElement | null)?.value || '';
+
+    let registered = false;
+    try {
+      const res = await fetch('/api/leads/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...lead, turnstileToken }),
+      });
+      registered = res.ok;
+      if (!res.ok && res.status !== 429) {
+        const data = await res.json().catch(() => ({}));
+        console.error('[leads] erro:', res.status, data);
+      }
+      if (res.status === 429) {
+        showStatus('Muitas tentativas. Aguarde 1 minuto.', 'error');
+        submitBtn.disabled = false;
+        return;
+      }
+    } catch (err) {
+      console.error('[leads] network error:', err);
     }
 
-    // Tracking stub (GTM/Pixel Meta — populado quando container for instalado)
+    if (!registered) {
+      showStatus('Não conseguimos registrar agora, mas vamos te direcionar pro WhatsApp.', 'error');
+    }
+
     (window as any).dataLayer = (window as any).dataLayer || [];
     (window as any).dataLayer.push({
       event: 'lead_submit',
@@ -394,21 +414,20 @@ const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { ti
     const msg = `Olá Hemerson! Me chamo *${lead.nome}*, telefone *${lead.telefone}*. Tenho interesse em orçamento para *${tipo}*${cidade ? ` em *${cidade}*` : ''}. Etapa: *${etapa}*.`;
     const waUrl = `https://wa.me/${waNumero}?text=${encodeURIComponent(msg)}`;
 
-    if (!error) {
+    if (registered) {
       showStatus('Lead registrado! Abrindo WhatsApp...', 'success');
       form.reset();
-      // Reset dropdowns
       tipoVal.value = '';
       etapaVal.value = '';
       document.getElementById('label-tipo')!.textContent = 'Selecione sua resposta';
       document.getElementById('label-etapa')!.textContent = 'Selecione sua resposta';
       document.getElementById('label-tipo')!.classList.replace('text-white', 'text-white/50');
       document.getElementById('label-etapa')!.classList.replace('text-white', 'text-white/50');
+      if ((window as any).turnstile) (window as any).turnstile.reset();
     }
 
     const win = window.open(waUrl, '_blank', 'noopener');
     if (!win) {
-      // Popup bloqueado — fallback
       window.location.href = waUrl;
     }
 

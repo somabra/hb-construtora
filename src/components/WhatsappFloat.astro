@@ -1,8 +1,11 @@
 ---
+import { getSetting } from '../lib/site-content';
+const wa = (await getSetting<{ numero: string; mensagem_default: string }>('whatsapp')) ?? { numero: '5566996752309', mensagem_default: 'Olá!' };
+const waHref = `https://wa.me/${wa.numero}?text=${encodeURIComponent(wa.mensagem_default ?? '')}`;
 ---
 
 <a
-  href="https://wa.me/5566996752309"
+  href={waHref}
   target="_blank"
   rel="noopener noreferrer"
   aria-label="Falar no WhatsApp"

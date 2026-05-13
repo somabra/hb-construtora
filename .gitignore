@@ -6,3 +6,4 @@ dist/
 *.env
 .vercel
 graphify-out/
+*.bak

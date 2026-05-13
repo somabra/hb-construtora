@@ -1,7 +1,24 @@
 ---
 import { getFAQ } from '../lib/site-content';
 const faqs = await getFAQ();
+
+const faqSchema = faqs.length > 0 ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.pergunta,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: f.resposta,
+    },
+  })),
+} : null;
 ---
+
+{faqSchema && (
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+)}
 
 <section id="faq" class="py-20 bg-gray-50">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

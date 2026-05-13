@@ -22,10 +22,10 @@ const obrasClient = obras.map(o => ({
       </div>
       <div class="hidden md:flex gap-3">
         <button class="prev-btn w-11 h-11 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all" aria-label="Anterior">
-          <span class="material-symbols-outlined">chevron_left</span>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         </button>
         <button class="next-btn w-11 h-11 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all" aria-label="Próximo">
-          <span class="material-symbols-outlined">chevron_right</span>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
         </button>
       </div>
     </div>
@@ -62,7 +62,7 @@ const obrasClient = obras.map(o => ({
                     data-index={i}
                   >
                     Ver mais
-                    <span class="material-symbols-outlined text-base">arrow_forward</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                   </button>
                 </div>
               </div>
@@ -72,10 +72,10 @@ const obrasClient = obras.map(o => ({
       </div>
 
       <button class="prev-btn md:hidden absolute left-2 top-[37.5%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm border border-primary/20 flex items-center justify-center shadow-lg text-primary hover:bg-primary hover:text-white transition-all z-10" aria-label="Anterior">
-        <span class="material-symbols-outlined">chevron_left</span>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
       </button>
       <button class="next-btn md:hidden absolute right-2 top-[37.5%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm border border-primary/20 flex items-center justify-center shadow-lg text-primary hover:bg-primary hover:text-white transition-all z-10" aria-label="Próximo">
-        <span class="material-symbols-outlined">chevron_right</span>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </button>
     </div>
 
@@ -85,7 +85,7 @@ const obrasClient = obras.map(o => ({
     <div class="min-h-full flex items-start md:items-center justify-center p-4 md:p-8">
       <div class="bg-white w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl relative">
         <button id="obra-close" class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/90 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all z-20" aria-label="Fechar">
-          <span class="material-symbols-outlined">close</span>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M6 18L18 6"/></svg>
         </button>
         <div class="p-6 md:p-10">
           <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-2 block">Portfólio</span>
@@ -140,11 +140,20 @@ const obrasClient = obras.map(o => ({
     modalTitle.textContent = obra.title;
     modalLocal.textContent = obra.local ?? '';
     modalLocal.style.display = obra.local ? '' : 'none';
-    modalGrid.innerHTML = obra.gallery.map(src => `
-      <div class="rounded-xl overflow-hidden aspect-[4/3] bg-primary/5">
-        <img src="${src}" alt="${obra.alt}" class="w-full h-full object-cover" loading="lazy" />
-      </div>
-    `).join('');
+
+    modalGrid.replaceChildren();
+    for (const src of obra.gallery) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'rounded-xl overflow-hidden aspect-[4/3] bg-primary/5';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = obra.alt;
+      img.loading = 'lazy';
+      img.className = 'w-full h-full object-cover';
+      wrapper.appendChild(img);
+      modalGrid.appendChild(wrapper);
+    }
+
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   }

@@ -1,5 +1,16 @@
 ---
+import { getSetting } from '../lib/site-content';
+const wa = (await getSetting<{ numero: string; mensagem_default: string }>('whatsapp')) ?? { numero: '5566996752309', mensagem_default: '' };
 const ano = new Date().getFullYear();
+
+const numeroFmt = (() => {
+  const d = wa.numero.replace(/\D/g, '');
+  if (d.length >= 12) {
+    return `(${d.slice(2, 4)}) ${d.slice(4, 9)}-${d.slice(9)}`;
+  }
+  return wa.numero;
+})();
+const waHref = `https://wa.me/${wa.numero}`;
 ---
 
 <footer class="bg-primary-deep text-white/60 py-20">
@@ -18,8 +29,8 @@ const ano = new Date().getFullYear();
         <h4 class="text-white font-bold mb-6 uppercase text-sm tracking-widest">Contato</h4>
         <ul class="space-y-3 text-sm">
           <li>
-            <a href="https://wa.me/5566996752309" target="_blank" rel="noopener noreferrer" class="hover:text-secondary transition-colors">
-              (66) 99675-2309
+            <a href={waHref} target="_blank" rel="noopener noreferrer" class="hover:text-secondary transition-colors">
+              {numeroFmt}
             </a>
           </li>
           <li>Rua dos Angicos, 1494</li>
@@ -39,7 +50,7 @@ const ano = new Date().getFullYear();
             Instagram
           </a>
           <a
-            href="https://wa.me/5566996752309"
+            href={waHref}
             target="_blank"
             rel="noopener noreferrer"
             class="opacity-80 hover:opacity-100 hover:text-secondary transition-all"

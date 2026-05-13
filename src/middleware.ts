@@ -1,7 +1,7 @@
 import { defineMiddleware } from 'astro:middleware';
 import { createSupabaseServerClient } from './lib/supabase-server';
 
-const PUBLIC_API_PATHS = new Set(['/api/auth/signin']);
+const PUBLIC_API_PATHS = new Set(['/api/auth/signin', '/api/leads/create']);
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { url, cookies, request, redirect } = context;
