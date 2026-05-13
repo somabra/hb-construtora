@@ -13,64 +13,117 @@ const { data: leads } = await supabase
 
 <AdminLayout title="Leads" user={user}>
 
-  <div class="flex items-center justify-between mb-6 gap-4">
-    <p class="text-gray-600">{leads?.length ?? 0} leads recebidos</p>
+  <div class="flex items-center justify-between mb-5 gap-3">
+    <p class="text-gray-600 text-sm">{leads?.length ?? 0} {(leads?.length ?? 0) === 1 ? 'lead recebido' : 'leads recebidos'}</p>
     <a
       href="/api/leads/export"
-      class="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-125 transition-all"
+      class="inline-flex items-center gap-2 bg-primary text-white px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:brightness-125 transition-all whitespace-nowrap"
     >
       <span class="material-symbols-outlined text-[18px]">download</span>
-      Exportar CSV
+      <span class="hidden sm:inline">Exportar CSV</span>
+      <span class="sm:hidden">CSV</span>
     </a>
   </div>
 
-  <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-    {leads && leads.length > 0 ? (
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
-            <tr>
-              <th class="text-left px-4 py-3">Data</th>
-              <th class="text-left px-4 py-3">Nome</th>
-              <th class="text-left px-4 py-3">Telefone</th>
-              <th class="text-left px-4 py-3">Cidade</th>
-              <th class="text-left px-4 py-3">Tipo</th>
-              <th class="text-left px-4 py-3">Etapa</th>
-              <th class="text-right px-4 py-3">WhatsApp</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100">
-            {leads.map(l => {
-              const d = new Date(l.created_at);
-              const data = d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-              const waNum = l.telefone.replace(/\D/g, '');
-              return (
-                <tr class="hover:bg-gray-50">
-                  <td class="px-4 py-3 text-gray-500 whitespace-nowrap">{data}</td>
-                  <td class="px-4 py-3 font-semibold text-gray-800">{l.nome}</td>
-                  <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{l.telefone}</td>
-                  <td class="px-4 py-3 text-gray-600">{l.cidade ?? '—'}</td>
-                  <td class="px-4 py-3 text-gray-600">{l.tipo}</td>
-                  <td class="px-4 py-3 text-gray-600">{l.etapa}</td>
-                  <td class="px-4 py-3 text-right">
-                    <a
-                      href={`https://wa.me/55${waNum}`}
-                      target="_blank"
-                      rel="noopener"
-                      class="inline-flex items-center gap-1 text-success font-semibold text-xs uppercase tracking-wider hover:underline"
-                    >
-                      Chamar
-                    </a>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+  {leads && leads.length > 0 ? (
+    <>
+      {/* Mobile: cards */}
+      <ul class="space-y-3 md:hidden">
+        {leads.map(l => {
+          const d = new Date(l.created_at);
+          const data = d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          const waNum = l.telefone.replace(/\D/g, '');
+          return (
+            <li class="bg-white rounded-2xl border border-gray-200 p-4">
+              <div class="flex items-start justify-between gap-3 mb-3">
+                <div class="min-w-0 flex-1">
+                  <p class="font-bold text-primary text-base truncate">{l.nome}</p>
+                  <p class="text-xs text-gray-400 mt-0.5">{data}</p>
+                </div>
+                <a
+                  href={`https://wa.me/55${waNum}`}
+                  target="_blank"
+                  rel="noopener"
+                  class="inline-flex items-center gap-1.5 bg-success text-white px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all whitespace-nowrap flex-shrink-0"
+                >
+                  <span class="material-symbols-outlined text-[16px]">chat</span>
+                  Chamar
+                </a>
+              </div>
+
+              <div class="grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
+                <div>
+                  <p class="text-[10px] uppercase tracking-wider text-gray-400">Telefone</p>
+                  <a href={`tel:${waNum}`} class="text-gray-700 font-semibold">{l.telefone}</a>
+                </div>
+                <div>
+                  <p class="text-[10px] uppercase tracking-wider text-gray-400">Cidade</p>
+                  <p class="text-gray-700">{l.cidade ?? '—'}</p>
+                </div>
+                <div>
+                  <p class="text-[10px] uppercase tracking-wider text-gray-400">Tipo</p>
+                  <p class="text-gray-700">{l.tipo}</p>
+                </div>
+                <div>
+                  <p class="text-[10px] uppercase tracking-wider text-gray-400">Etapa</p>
+                  <p class="text-gray-700">{l.etapa}</p>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* Desktop: tabela */}
+      <div class="hidden md:block bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
+              <tr>
+                <th class="text-left px-4 py-3">Data</th>
+                <th class="text-left px-4 py-3">Nome</th>
+                <th class="text-left px-4 py-3">Telefone</th>
+                <th class="text-left px-4 py-3">Cidade</th>
+                <th class="text-left px-4 py-3">Tipo</th>
+                <th class="text-left px-4 py-3">Etapa</th>
+                <th class="text-right px-4 py-3">WhatsApp</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              {leads.map(l => {
+                const d = new Date(l.created_at);
+                const data = d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                const waNum = l.telefone.replace(/\D/g, '');
+                return (
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 text-gray-500 whitespace-nowrap">{data}</td>
+                    <td class="px-4 py-3 font-semibold text-gray-800">{l.nome}</td>
+                    <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{l.telefone}</td>
+                    <td class="px-4 py-3 text-gray-600">{l.cidade ?? '—'}</td>
+                    <td class="px-4 py-3 text-gray-600">{l.tipo}</td>
+                    <td class="px-4 py-3 text-gray-600">{l.etapa}</td>
+                    <td class="px-4 py-3 text-right">
+                      <a
+                        href={`https://wa.me/55${waNum}`}
+                        target="_blank"
+                        rel="noopener"
+                        class="inline-flex items-center gap-1 text-success font-semibold text-xs uppercase tracking-wider hover:underline"
+                      >
+                        Chamar
+                      </a>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
-    ) : (
-      <p class="px-6 py-16 text-center text-gray-400">Nenhum lead recebido ainda.</p>
-    )}
-  </div>
+    </>
+  ) : (
+    <div class="bg-white rounded-2xl border border-gray-200 px-6 py-16 text-center text-gray-400">
+      Nenhum lead recebido ainda.
+    </div>
+  )}
 
 </AdminLayout>

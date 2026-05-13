@@ -17,8 +17,8 @@ const { data: sections } = await supabase
 
   <ul class="space-y-2">
     {sections?.map((s, idx) => (
-      <li class="bg-white rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
-        <span class="font-bold text-2xl text-gray-300 w-8 text-center">{idx + 1}</span>
+      <li class="bg-white rounded-2xl border border-gray-200 p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+        <span class="font-bold text-xl sm:text-2xl text-gray-300 w-6 sm:w-8 text-center flex-shrink-0">{idx + 1}</span>
 
         <div class="flex flex-col gap-1">
           <form method="POST" action="/api/admin/secoes" class="leading-none">
@@ -40,16 +40,16 @@ const { data: sections } = await supabase
         </div>
 
         <div class="flex-1 min-w-0">
-          <p class="font-semibold text-primary">{s.title}</p>
-          <p class="text-xs text-gray-400 uppercase tracking-wider">slug: {s.slug}</p>
+          <p class="font-semibold text-primary text-sm sm:text-base truncate">{s.title}</p>
+          <p class="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider truncate">slug: {s.slug}</p>
         </div>
 
-        <form method="POST" action="/api/admin/secoes">
+        <form method="POST" action="/api/admin/secoes" class="flex-shrink-0">
           <input type="hidden" name="_action" value="toggle" />
           <input type="hidden" name="id" value={s.id} />
           <button
             type="submit"
-            class={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
+            class={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${
               s.enabled
                 ? 'bg-green-100 text-success hover:bg-green-200'
                 : 'bg-gray-200 text-gray-500 hover:bg-gray-300'

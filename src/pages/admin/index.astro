@@ -28,34 +28,34 @@ const cards = [
 
 <AdminLayout title="Dashboard" user={user}>
 
-  <p class="text-gray-600 mb-8">Olá! Aqui você gerencia tudo do site da HB Construtora.</p>
+  <p class="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">Olá! Aqui você gerencia tudo do site da HB Construtora.</p>
 
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
     {cards.map(c => (
-      <a href={c.href} class="bg-white rounded-2xl p-5 border border-gray-200 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-        <div class={`${c.color} text-white w-10 h-10 rounded-lg flex items-center justify-center mb-3`}>
-          <span class="material-symbols-outlined text-[22px]">{c.icon}</span>
+      <a href={c.href} class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+        <div class={`${c.color} text-white w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center mb-2 sm:mb-3`}>
+          <span class="material-symbols-outlined text-[20px] sm:text-[22px]">{c.icon}</span>
         </div>
-        <p class="text-3xl font-bold text-primary">{c.value}</p>
-        <p class="text-xs text-gray-500 mt-1">{c.label}</p>
+        <p class="text-2xl sm:text-3xl font-bold text-primary">{c.value}</p>
+        <p class="text-[11px] sm:text-xs text-gray-500 mt-1 leading-tight">{c.label}</p>
       </a>
     ))}
   </div>
 
   <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-      <h2 class="font-bold text-primary">Últimos leads</h2>
-      <a href="/admin/leads" class="text-brand-orange text-xs font-bold uppercase tracking-wider hover:underline">Ver todos →</a>
+    <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 flex items-center justify-between gap-2">
+      <h2 class="font-bold text-primary text-sm sm:text-base">Últimos leads</h2>
+      <a href="/admin/leads" class="text-brand-orange text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:underline whitespace-nowrap">Ver todos →</a>
     </div>
     {ultimosLeads && ultimosLeads.length > 0 ? (
       <ul class="divide-y divide-gray-100">
         {ultimosLeads.map(l => (
-          <li class="px-6 py-3 flex items-center justify-between gap-4 hover:bg-gray-50">
-            <div class="min-w-0">
-              <p class="font-semibold text-gray-800 truncate">{l.nome}</p>
+          <li class="px-4 sm:px-6 py-3 flex items-center justify-between gap-3 hover:bg-gray-50">
+            <div class="min-w-0 flex-1">
+              <p class="font-semibold text-gray-800 truncate text-sm">{l.nome}</p>
               <p class="text-xs text-gray-500 truncate">{l.telefone} · {l.tipo}</p>
             </div>
-            <p class="text-xs text-gray-400 whitespace-nowrap">{new Date(l.created_at).toLocaleString('pt-BR')}</p>
+            <p class="text-[10px] sm:text-xs text-gray-400 whitespace-nowrap flex-shrink-0">{new Date(l.created_at).toLocaleDateString('pt-BR')}</p>
           </li>
         ))}
       </ul>

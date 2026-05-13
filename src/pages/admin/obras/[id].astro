@@ -35,7 +35,7 @@ const saved = Astro.url.searchParams.get('saved');
   )}
 
   <!-- Metadados -->
-  <form method="POST" action="/api/admin/obras" class="bg-white rounded-2xl border border-gray-200 p-6 mb-6 space-y-4">
+  <form method="POST" action="/api/admin/obras" class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6 space-y-4">
     <input type="hidden" name="_action" value="update" />
     <input type="hidden" name="id" value={obra.id} />
 
@@ -70,7 +70,7 @@ const saved = Astro.url.searchParams.get('saved');
   </form>
 
   <!-- Fotos -->
-  <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+  <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6">
     <h3 class="font-bold text-primary text-lg mb-4">Fotos da obra ({fotos?.length ?? 0})</h3>
 
     <form method="POST" action="/api/admin/obra-fotos" class="bg-gray-50 rounded-lg p-4 mb-6 space-y-3">
@@ -97,28 +97,28 @@ const saved = Astro.url.searchParams.get('saved');
         {fotos.map((f, idx) => (
           <li class="relative group rounded-lg overflow-hidden bg-gray-100 aspect-[4/3]">
             <img src={resolveImg(f.path)} alt={f.alt ?? ''} class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-end justify-between p-2 opacity-0 group-hover:opacity-100">
+            <div class="absolute inset-x-0 bottom-0 flex items-end justify-between p-2 gap-2 bg-gradient-to-t from-black/70 to-transparent md:bg-none md:from-transparent md:group-hover:bg-gradient-to-t md:group-hover:from-black/60 md:opacity-100 transition-all">
               <div class="flex gap-1">
                 <form method="POST" action="/api/admin/obra-fotos" class="leading-none">
                   <input type="hidden" name="_action" value="reorder" />
                   <input type="hidden" name="id" value={f.id} />
                   <input type="hidden" name="obra_id" value={obra.id} />
                   <input type="hidden" name="dir" value="up" />
-                  <button type="submit" disabled={idx === 0} class="w-7 h-7 rounded bg-white/90 text-gray-700 disabled:opacity-25 flex items-center justify-center" aria-label="Mover pra esquerda">←</button>
+                  <button type="submit" disabled={idx === 0} class="w-8 h-8 rounded bg-white/95 text-gray-700 disabled:opacity-25 flex items-center justify-center shadow-sm text-base" aria-label="Mover pra esquerda">←</button>
                 </form>
                 <form method="POST" action="/api/admin/obra-fotos" class="leading-none">
                   <input type="hidden" name="_action" value="reorder" />
                   <input type="hidden" name="id" value={f.id} />
                   <input type="hidden" name="obra_id" value={obra.id} />
                   <input type="hidden" name="dir" value="down" />
-                  <button type="submit" disabled={idx === fotos.length - 1} class="w-7 h-7 rounded bg-white/90 text-gray-700 disabled:opacity-25 flex items-center justify-center" aria-label="Mover pra direita">→</button>
+                  <button type="submit" disabled={idx === fotos.length - 1} class="w-8 h-8 rounded bg-white/95 text-gray-700 disabled:opacity-25 flex items-center justify-center shadow-sm text-base" aria-label="Mover pra direita">→</button>
                 </form>
               </div>
               <form method="POST" action="/api/admin/obra-fotos" onsubmit="return confirm('Apagar esta foto?')">
                 <input type="hidden" name="_action" value="delete" />
                 <input type="hidden" name="id" value={f.id} />
                 <input type="hidden" name="obra_id" value={obra.id} />
-                <button type="submit" class="w-7 h-7 rounded bg-red-500 text-white flex items-center justify-center" aria-label="Apagar foto">×</button>
+                <button type="submit" class="w-8 h-8 rounded bg-red-500 text-white flex items-center justify-center shadow-sm text-base" aria-label="Apagar foto">×</button>
               </form>
             </div>
           </li>

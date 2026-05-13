@@ -31,7 +31,7 @@ const saved = Astro.url.searchParams.get('saved');
   <p class="text-gray-600 mb-6 text-sm">Edite os textos e configurações principais do site. Ao salvar, lembre-se de clicar em <strong>Publicar alterações</strong> no topo pra aplicar.</p>
 
   <!-- VÍDEO INSTITUCIONAL (destaque) -->
-  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border-2 border-brand-orange p-6 mb-6">
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border-2 border-brand-orange p-4 sm:p-6 mb-6">
     <input type="hidden" name="key" value="hero" />
     <h2 class="font-bold text-primary text-lg flex items-center gap-2 mb-2">
       <span class="material-symbols-outlined text-brand-orange">smart_display</span>
@@ -74,7 +74,7 @@ const saved = Astro.url.searchParams.get('saved');
   </form>
 
   <!-- HERO TEXTOS -->
-  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6">
     <input type="hidden" name="key" value="hero" />
     <h2 class="font-bold text-primary text-lg mb-4">Textos do Hero (topo do site)</h2>
 
@@ -104,7 +104,7 @@ const saved = Astro.url.searchParams.get('saved');
   </form>
 
   <!-- SOBRE -->
-  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6">
     <input type="hidden" name="key" value="sobre" />
     <h2 class="font-bold text-primary text-lg mb-4">Sobre a HB</h2>
 
@@ -128,12 +128,12 @@ const saved = Astro.url.searchParams.get('saved');
           {[0, 1, 2, 3].map(i => {
             const s = (sobre.stats ?? [])[i] ?? { prefix: '', target: 0, suffix: '', label: '' };
             return (
-              <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+              <div class="bg-gray-50 rounded-lg p-3 sm:p-4 space-y-2">
                 <p class="text-xs font-bold text-gray-500">Stat #{i + 1}</p>
-                <div class="grid grid-cols-3 gap-2">
-                  <input name={`stat_prefix_${i}`} type="text" value={s.prefix ?? ''} placeholder="prefix" class="border border-gray-300 rounded px-2 py-1.5 text-sm" />
-                  <input name={`stat_target_${i}`} type="number" value={s.target ?? 0} placeholder="número" class="border border-gray-300 rounded px-2 py-1.5 text-sm" />
-                  <input name={`stat_suffix_${i}`} type="text" value={s.suffix ?? ''} placeholder="sufixo" class="border border-gray-300 rounded px-2 py-1.5 text-sm" />
+                <div class="grid grid-cols-3 gap-1.5 sm:gap-2">
+                  <input name={`stat_prefix_${i}`} type="text" value={s.prefix ?? ''} placeholder="prefix" class="w-full min-w-0 border border-gray-300 rounded px-2 py-1.5 text-sm" />
+                  <input name={`stat_target_${i}`} type="number" value={s.target ?? 0} placeholder="núm." class="w-full min-w-0 border border-gray-300 rounded px-2 py-1.5 text-sm" />
+                  <input name={`stat_suffix_${i}`} type="text" value={s.suffix ?? ''} placeholder="sufixo" class="w-full min-w-0 border border-gray-300 rounded px-2 py-1.5 text-sm" />
                 </div>
                 <input name={`stat_label_${i}`} type="text" value={s.label ?? ''} placeholder="rótulo" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" />
               </div>
@@ -149,7 +149,7 @@ const saved = Astro.url.searchParams.get('saved');
   </form>
 
   <!-- WHATSAPP -->
-  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6">
     <input type="hidden" name="key" value="whatsapp" />
     <h2 class="font-bold text-primary text-lg mb-4 flex items-center gap-2">
       <span class="material-symbols-outlined text-success">chat</span>
@@ -172,7 +172,7 @@ const saved = Astro.url.searchParams.get('saved');
   </form>
 
   <!-- CARD CONTATO -->
-  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+  <form method="POST" action="/api/admin/settings" class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6">
     <input type="hidden" name="key" value="contato_card" />
     <h2 class="font-bold text-primary text-lg mb-4">Card de Contato (título do formulário)</h2>
     <div>

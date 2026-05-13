@@ -17,21 +17,22 @@ const editItem = editId ? items?.find(i => i.id === editId) : null;
 
 <AdminLayout title="FAQ" user={user}>
 
-  <div class="flex items-center justify-between mb-6 gap-4">
-    <p class="text-gray-600">{items?.length ?? 0} perguntas cadastradas</p>
+  <div class="flex items-center justify-between mb-5 gap-3">
+    <p class="text-gray-600 text-sm">{items?.length ?? 0} perguntas</p>
     {!adding && !editItem && (
       <a
         href="/admin/faq?add=1"
-        class="inline-flex items-center gap-2 bg-orange-gradient text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all"
+        class="inline-flex items-center gap-2 bg-orange-gradient text-white px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all whitespace-nowrap"
       >
         <span class="material-symbols-outlined text-[18px]">add</span>
-        Nova pergunta
+        <span class="hidden sm:inline">Nova pergunta</span>
+        <span class="sm:hidden">Nova</span>
       </a>
     )}
   </div>
 
   {(adding || editItem) && (
-    <form method="POST" action="/api/admin/faq" class="bg-white rounded-2xl border-2 border-brand-orange p-6 mb-6 space-y-4">
+    <form method="POST" action="/api/admin/faq" class="bg-white rounded-2xl border-2 border-brand-orange p-4 sm:p-6 mb-6 space-y-4">
       <input type="hidden" name="_action" value={editItem ? 'update' : 'create'} />
       {editItem && <input type="hidden" name="id" value={editItem.id} />}
       <h3 class="font-bold text-primary text-lg">{editItem ? 'Editando pergunta' : 'Nova pergunta'}</h3>
@@ -69,41 +70,57 @@ const editItem = editId ? items?.find(i => i.id === editId) : null;
 
   <ul class="space-y-2">
     {items?.map((item, idx) => (
-      <li class={`bg-white rounded-2xl border ${editId === item.id ? 'border-brand-orange' : 'border-gray-200'} p-4 flex items-start gap-3`}>
-        <div class="flex flex-col gap-1 pt-1">
-          <form method="POST" action="/api/admin/faq" class="leading-none">
-            <input type="hidden" name="_action" value="reorder" />
-            <input type="hidden" name="id" value={item.id} />
-            <input type="hidden" name="dir" value="up" />
-            <button type="submit" disabled={idx === 0} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra cima">
-              <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_upward</span>
-            </button>
-          </form>
-          <form method="POST" action="/api/admin/faq" class="leading-none">
-            <input type="hidden" name="_action" value="reorder" />
-            <input type="hidden" name="id" value={item.id} />
-            <input type="hidden" name="dir" value="down" />
-            <button type="submit" disabled={idx === (items?.length ?? 0) - 1} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra baixo">
-              <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_downward</span>
-            </button>
-          </form>
+      <li class={`bg-white rounded-2xl border ${editId === item.id ? 'border-brand-orange' : 'border-gray-200'} p-3 sm:p-4`}>
+        <div class="flex items-start gap-3">
+          <div class="flex flex-col gap-1 pt-1 flex-shrink-0">
+            <form method="POST" action="/api/admin/faq" class="leading-none">
+              <input type="hidden" name="_action" value="reorder" />
+              <input type="hidden" name="id" value={item.id} />
+              <input type="hidden" name="dir" value="up" />
+              <button type="submit" disabled={idx === 0} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra cima">
+                <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_upward</span>
+              </button>
+            </form>
+            <form method="POST" action="/api/admin/faq" class="leading-none">
+              <input type="hidden" name="_action" value="reorder" />
+              <input type="hidden" name="id" value={item.id} />
+              <input type="hidden" name="dir" value="down" />
+              <button type="submit" disabled={idx === (items?.length ?? 0) - 1} class="p-1 rounded hover:bg-gray-100 disabled:opacity-25" aria-label="Mover pra baixo">
+                <span class="material-symbols-outlined text-[18px] text-gray-500">arrow_downward</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-primary text-sm sm:text-base">{item.pergunta}</p>
+            <p class="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2 whitespace-pre-line">{item.resposta}</p>
+            {!item.enabled && <span class="inline-block mt-2 text-[10px] uppercase tracking-wider bg-gray-200 text-gray-600 px-2 py-0.5 rounded">Oculto</span>}
+          </div>
+
+          <div class="hidden sm:flex gap-1 flex-shrink-0">
+            <a href={`/admin/faq?edit=${item.id}`} class="p-2 rounded hover:bg-gray-100" aria-label="Editar">
+              <span class="material-symbols-outlined text-[18px] text-gray-500">edit</span>
+            </a>
+            <form method="POST" action="/api/admin/faq" onsubmit="return confirm('Apagar esta pergunta?')">
+              <input type="hidden" name="_action" value="delete" />
+              <input type="hidden" name="id" value={item.id} />
+              <button type="submit" class="p-2 rounded hover:bg-red-50 text-error" aria-label="Apagar">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </form>
+          </div>
         </div>
 
-        <div class="flex-1 min-w-0">
-          <p class="font-semibold text-primary">{item.pergunta}</p>
-          <p class="text-sm text-gray-600 mt-1 line-clamp-2 whitespace-pre-line">{item.resposta}</p>
-          {!item.enabled && <span class="inline-block mt-2 text-[10px] uppercase tracking-wider bg-gray-200 text-gray-600 px-2 py-0.5 rounded">Oculto</span>}
-        </div>
-
-        <div class="flex gap-1">
-          <a href={`/admin/faq?edit=${item.id}`} class="p-2 rounded hover:bg-gray-100" aria-label="Editar">
-            <span class="material-symbols-outlined text-[18px] text-gray-500">edit</span>
+        <div class="flex sm:hidden gap-2 mt-3 pt-3 border-t border-gray-100">
+          <a href={`/admin/faq?edit=${item.id}`} class="flex-1 inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider hover:bg-gray-200">
+            <span class="material-symbols-outlined text-[16px]">edit</span>
+            Editar
           </a>
           <form method="POST" action="/api/admin/faq" onsubmit="return confirm('Apagar esta pergunta?')">
             <input type="hidden" name="_action" value="delete" />
             <input type="hidden" name="id" value={item.id} />
-            <button type="submit" class="p-2 rounded hover:bg-red-50 text-error" aria-label="Apagar">
-              <span class="material-symbols-outlined text-[18px]">delete</span>
+            <button type="submit" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-red-50 text-error text-xs font-bold uppercase tracking-wider hover:bg-red-100" aria-label="Apagar">
+              <span class="material-symbols-outlined text-[16px]">delete</span>
             </button>
           </form>
         </div>
