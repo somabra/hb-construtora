@@ -26,18 +26,15 @@ const sobre = (await getSetting<SobreData>('sobre')) ?? {
         </div>
       </div>
 
-      <div class="order-1 lg:order-2 relative">
-        <div class="relative max-w-[340px] sm:max-w-sm lg:max-w-none mx-auto">
-          <div class="absolute -inset-x-4 bottom-0 h-2/3 bg-gradient-to-t from-brand-orange/10 to-transparent rounded-3xl pointer-events-none" aria-hidden="true"></div>
-          <img
-            src="/sobre/hemerson-retrato.webp"
-            alt="Hemerson Borges, fundador da HB Construtora"
-            class="relative w-full h-auto block"
-            loading="lazy"
-            width="900"
-            height="1293"
-          />
-        </div>
+      <div class="order-1 lg:order-2">
+        <img
+          src="/sobre/hemerson-retrato.webp"
+          alt="Hemerson Borges, fundador da HB Construtora"
+          class="w-full h-auto block max-w-[200px] sm:max-w-[220px] lg:max-w-[300px] mx-auto"
+          loading="lazy"
+          width="900"
+          height="1293"
+        />
       </div>
 
     </div>
