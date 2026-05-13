@@ -21,6 +21,17 @@ const sobre = (await getSetting<SobreData>('sobre')) ?? {
         <span class="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-4 block">{sobre.eyebrow}</span>
         <h2 class="font-headline text-3xl md:text-5xl font-bold text-primary mb-6 leading-tight">{sobre.titulo}</h2>
 
+        <img
+          src="/sobre/hemerson-retrato.webp"
+          alt="Hemerson Borges, fundador da HB Construtora"
+          class="lg:hidden w-full h-auto block max-w-[200px] mx-auto mb-6 select-none pointer-events-none [-webkit-user-drag:none]"
+          loading="lazy"
+          draggable="false"
+          oncontextmenu="return false"
+          width="900"
+          height="1293"
+        />
+
         <div class="text-on-surface-variant leading-relaxed text-sm md:text-base space-y-4 max-w-2xl mx-auto lg:mx-0">
           {sobre.paragrafos.map(p => <p>{p}</p>)}
         </div>
