@@ -1,6 +1,26 @@
 ---
-import { getFAQ } from '../lib/site-content';
+import { getFAQ, getSetting } from '../lib/site-content';
+import WhatsappIcon from './WhatsappIcon.astro';
+
 const faqs = await getFAQ();
+
+interface WaData { numero: string; mensagem_default: string; }
+const wa = (await getSetting<WaData>('whatsapp')) ?? { numero: '5566996752309', mensagem_default: 'Olá Hemerson!' };
+
+// Separa o texto da resposta de uma marcação opcional {cta-whatsapp:Texto do botão}.
+// Permite editar respostas no admin com a frase de CTA sem mexer em código.
+function splitAnswer(resposta: string): { text: string; ctaText: string | null } {
+  const match = resposta.match(/\{cta-whatsapp:([^}]+)\}/);
+  if (!match) return { text: resposta, ctaText: null };
+  return {
+    text: resposta.replace(match[0], '').trim(),
+    ctaText: match[1].trim(),
+  };
+}
+
+function waHrefFor(text: string): string {
+  return `https://wa.me/${wa.numero}?text=${encodeURIComponent(text)}`;
+}
 
 const faqSchema = faqs.length > 0 ? {
   '@context': 'https://schema.org',
@@ -30,20 +50,37 @@ const faqSchema = faqs.length > 0 ? {
     </div>
 
     <div class="space-y-3" id="faq-list">
-      {faqs.map((item) => (
-        <div class="faq-item bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-          <button
-            class="faq-btn w-full text-left px-6 py-5 flex justify-between items-center gap-4 hover:bg-gray-50 transition-colors"
-            aria-expanded="false"
-          >
-            <span class="font-semibold text-primary-container text-base leading-snug">{item.pergunta}</span>
-            <span class="faq-icon text-brand-orange text-xl flex-shrink-0 transition-transform duration-300">▾</span>
-          </button>
-          <div class="faq-answer hidden px-6 pb-5">
-            <p class="text-gray-600 leading-relaxed text-sm whitespace-pre-line">{item.resposta}</p>
+      {faqs.map((item) => {
+        const { text, ctaText } = splitAnswer(item.resposta);
+        const waMsg = ctaText ? `Olá Hemerson! ${ctaText}` : wa.mensagem_default;
+        return (
+          <div class="faq-item bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <button
+              class="faq-btn w-full text-left px-6 py-5 flex justify-between items-center gap-4 hover:bg-gray-50 transition-colors"
+              aria-expanded="false"
+            >
+              <span class="font-semibold text-primary-container text-base leading-snug">{item.pergunta}</span>
+              <span class="faq-icon text-brand-orange text-xl flex-shrink-0 transition-transform duration-300">▾</span>
+            </button>
+            <div class="faq-answer hidden px-6 pb-5">
+              <p class="text-gray-600 leading-relaxed text-sm whitespace-pre-line">{text}</p>
+              {ctaText && (
+                <a
+                  href={waHrefFor(waMsg)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-4 inline-flex items-center gap-2.5 text-primary-container font-semibold text-sm border-b-2 border-brand-orange pb-1 hover:text-brand-orange transition-colors group"
+                >
+                  <span>{ctaText}</span>
+                  <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-whatsapp-gradient text-white shadow-md group-hover:scale-110 transition-transform">
+                    <WhatsappIcon class="w-4 h-4" />
+                  </span>
+                </a>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
 
   </div>
