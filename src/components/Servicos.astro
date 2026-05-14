@@ -122,13 +122,17 @@ const servicosClient = servicos.map(s => ({
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     document.body.style.overflow = 'hidden';
+    // Empurra um estado no histórico — botão "voltar" do celular fecha o modal em vez de sair do site
+    history.pushState({ servicoModal: true }, '');
     requestAnimationFrame(() => {
       modalContent.classList.remove('scale-95', 'opacity-0');
       modalContent.classList.add('scale-100', 'opacity-100');
     });
   }
 
+  // Apenas anima e esconde — NÃO mexe no history (popstate fica responsável por isso)
   function closeModal() {
+    if (modal.classList.contains('hidden')) return;
     modalContent.classList.remove('scale-100', 'opacity-100');
     modalContent.classList.add('scale-95', 'opacity-0');
     setTimeout(() => {
@@ -138,6 +142,20 @@ const servicosClient = servicos.map(s => ({
     }, 200);
   }
 
+  // Wrapper chamado pelos botões/teclas: usa history.back se o estado existe (dispara popstate → closeModal),
+  // senão fecha direto. Evita duplicar entradas no histórico ou estados órfãos.
+  function dismissModal() {
+    if (history.state && (history.state as any).servicoModal) {
+      history.back();
+    } else {
+      closeModal();
+    }
+  }
+
+  window.addEventListener('popstate', () => {
+    if (!modal.classList.contains('hidden')) closeModal();
+  });
+
   document.querySelectorAll<HTMLButtonElement>('[data-servico-trigger]').forEach(btn => {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.dataset.index || '0', 10);
@@ -145,9 +163,9 @@ const servicosClient = servicos.map(s => ({
     });
   });
 
-  closeBtn.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', dismissModal);
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
+    if (e.target === modal) dismissModal();
   });
 
   modalCta.addEventListener('click', () => {
@@ -156,7 +174,7 @@ const servicosClient = servicos.map(s => ({
       const opt = document.querySelector<HTMLButtonElement>(`.opt-tipo[data-value="${formValue}"]`);
       opt?.click();
     }
-    closeModal();
+    dismissModal();
     setTimeout(() => {
       const target = document.getElementById('contato');
       target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -165,6 +183,6 @@ const servicosClient = servicos.map(s => ({
 
   document.addEventListener('keydown', (e) => {
     if (modal.classList.contains('hidden')) return;
-    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Escape') dismissModal();
   });
 </script>

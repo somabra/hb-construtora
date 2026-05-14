@@ -146,12 +146,27 @@ const obrasClient = obras.map(o => ({
 
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    // Botão "voltar" do celular fecha o modal em vez de sair do site
+    history.pushState({ obraModal: true }, '');
   }
 
   function closeObra() {
+    if (modal.classList.contains('hidden')) return;
     modal.classList.add('hidden');
     document.body.style.overflow = '';
   }
+
+  function dismissObra() {
+    if (history.state && (history.state as any).obraModal) {
+      history.back();
+    } else {
+      closeObra();
+    }
+  }
+
+  window.addEventListener('popstate', () => {
+    if (!modal.classList.contains('hidden')) closeObra();
+  });
 
   document.querySelectorAll<HTMLButtonElement>('.obra-open').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -160,12 +175,12 @@ const obrasClient = obras.map(o => ({
     });
   });
 
-  modalClose.addEventListener('click', closeObra);
+  modalClose.addEventListener('click', dismissObra);
   modal.addEventListener('click', (e) => {
     // Fecha se o clique foi fora do card branco (qualquer área do overlay/wrapper)
-    if (!(e.target as HTMLElement).closest('#obra-card')) closeObra();
+    if (!(e.target as HTMLElement).closest('#obra-card')) dismissObra();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeObra();
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) dismissObra();
   });
 </script>
