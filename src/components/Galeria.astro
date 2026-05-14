@@ -73,7 +73,7 @@ const obrasClient = obras.map(o => ({
 
   <div id="obra-modal" class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
     <div class="min-h-full flex items-start md:items-center justify-center p-4 md:p-8">
-      <div class="bg-white w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl relative">
+      <div id="obra-card" class="bg-white w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl relative">
         <button id="obra-close" class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/90 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all z-20" aria-label="Fechar">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M6 18L18 6"/></svg>
         </button>
@@ -162,7 +162,8 @@ const obrasClient = obras.map(o => ({
 
   modalClose.addEventListener('click', closeObra);
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeObra();
+    // Fecha se o clique foi fora do card branco (qualquer área do overlay/wrapper)
+    if (!(e.target as HTMLElement).closest('#obra-card')) closeObra();
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeObra();
