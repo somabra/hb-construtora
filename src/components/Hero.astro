@@ -247,6 +247,8 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
         unmuteBtn.addEventListener('click', function () {
           video.muted = false;
           if (video.volume === 0) video.volume = 1;
+          // Reinicia do começo pra pessoa ouvir o áudio + ver o vídeo desde o início
+          try { video.currentTime = 0; } catch (e) {}
           var p = video.play();
           if (p && p.catch) p.catch(function () {});
           syncUnmuteVisibility();
