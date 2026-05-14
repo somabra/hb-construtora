@@ -6,7 +6,7 @@ const wa = (await getSetting<{ numero: string; mensagem_default: string }>('what
 const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { titulo_html: 'Fale com a HB Construtora' };
 ---
 
-<section id="contato-section" class="relative overflow-hidden py-20 md:py-28">
+<section id="contato-section" class="relative overflow-hidden py-20 md:py-28 rounded-t-3xl -mt-8 z-10">
 
   <div class="absolute inset-0 overflow-hidden">
     <video
