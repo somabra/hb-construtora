@@ -76,34 +76,18 @@ const waHrefSobre = `https://wa.me/${wa.numero}?text=${encodeURIComponent(waMsgS
             width="900"
             height="1293"
           />
-          <!-- Botão WhatsApp — sobreposto na foto, altura da barriga -->
+          <!-- Botão WhatsApp — sobreposto na foto -->
           <a
             href={waHrefSobre}
             target="_blank"
             rel="noopener noreferrer"
-            class="sobre-wa-cta absolute left-1/2 -translate-x-1/2 bottom-[28%] inline-flex items-center gap-3 bg-whatsapp-gradient text-white px-6 py-3.5 text-sm font-bold uppercase tracking-wider hover:brightness-110 transition-all rounded-xl shadow-2xl shadow-green-900/40 whitespace-nowrap"
+            class="sobre-wa-cta absolute left-1/2 -translate-x-1/2 bottom-[10%] inline-flex items-center gap-3 bg-whatsapp-gradient text-white px-6 py-3.5 text-sm font-bold uppercase tracking-wider hover:brightness-110 transition-all rounded-xl shadow-2xl shadow-green-900/40 whitespace-nowrap"
           >
             <WhatsappIcon class="w-5 h-5 flex-shrink-0" />
             Falar com o Hemerson
           </a>
         </div>
       </div>
-
-      <!-- Seta curva: sai do final do CTA e aponta pra direita-baixo, em direção ao botão sobreposto -->
-      <svg
-        class="hidden lg:block absolute pointer-events-none text-secondary"
-        style="left: 50%; bottom: 18%; width: 180px; height: 100px;"
-        viewBox="0 0 200 110"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M 5 15 Q 70 5, 130 45 T 188 90" />
-        <path d="M 172 92 L 188 90 L 184 105" />
-      </svg>
 
     </div>
   </div>
