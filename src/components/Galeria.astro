@@ -97,26 +97,64 @@ const obrasClient = obras.map(o => ({
   const track    = document.getElementById('gallery-track')!;
   const prevBtns = document.querySelectorAll<HTMLButtonElement>('.prev-btn');
   const nextBtns = document.querySelectorAll<HTMLButtonElement>('.next-btn');
-  let current = 0;
 
-  function getVisible(): number {
-    if (window.innerWidth >= 768) return 2;
-    return 1;
+  const realCount = track.children.length;
+  let current = realCount; // começa no primeiro item real (depois dos clones do início)
+  let isAnimating = false;
+
+  // Loop infinito: clona uma cópia completa dos cards antes e depois dos reais
+  if (realCount > 0) {
+    const realCards = Array.from(track.children) as HTMLElement[];
+    realCards.forEach(c => {
+      const clone = c.cloneNode(true) as HTMLElement;
+      clone.setAttribute('aria-hidden', 'true');
+      track.appendChild(clone);
+    });
+    realCards.forEach(c => {
+      const clone = c.cloneNode(true) as HTMLElement;
+      clone.setAttribute('aria-hidden', 'true');
+      track.insertBefore(clone, track.firstChild);
+    });
   }
 
-  function updateGallery(): void {
+  function updateGallery(animate: boolean): void {
     const item = track.children[0] as HTMLElement;
     if (!item) return;
     const gap = 24;
     const itemWidth = item.offsetWidth + gap;
-    const maxSlide = track.children.length - getVisible();
-    current = Math.max(0, Math.min(current, maxSlide));
+    if (!animate) track.style.transition = 'none';
     track.style.transform = `translateX(-${current * itemWidth}px)`;
+    if (!animate) {
+      void track.offsetHeight; // força reflow pra próxima transição funcionar
+      track.style.transition = '';
+    }
   }
 
-  nextBtns.forEach(btn => btn.addEventListener('click', () => { current++; updateGallery(); }));
-  prevBtns.forEach(btn => btn.addEventListener('click', () => { current--; updateGallery(); }));
-  window.addEventListener('resize', updateGallery);
+  function step(dir: 1 | -1): void {
+    if (isAnimating || realCount <= 1) return;
+    isAnimating = true;
+    current += dir;
+    updateGallery(true);
+  }
+
+  // Após a transição, se estamos num clone, faz snap pro item real correspondente
+  track.addEventListener('transitionend', (e) => {
+    if (e.propertyName !== 'transform') return;
+    isAnimating = false;
+    if (current >= realCount * 2) {
+      current = realCount;
+      updateGallery(false);
+    } else if (current < realCount) {
+      current = realCount * 2 - 1;
+      updateGallery(false);
+    }
+  });
+
+  nextBtns.forEach(btn => btn.addEventListener('click', () => step(1)));
+  prevBtns.forEach(btn => btn.addEventListener('click', () => step(-1)));
+  window.addEventListener('resize', () => updateGallery(false));
+
+  updateGallery(false);
 
   const modal      = document.getElementById('obra-modal')!;
   const modalClose = document.getElementById('obra-close')!;
@@ -168,11 +206,12 @@ const obrasClient = obras.map(o => ({
     if (!modal.classList.contains('hidden')) closeObra();
   });
 
-  document.querySelectorAll<HTMLButtonElement>('.obra-open').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = Number(btn.dataset.index);
-      openObra(idx);
-    });
+  // Event delegation no track pra cobrir botões clonados também
+  track.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.obra-open');
+    if (!btn) return;
+    const idx = Number(btn.dataset.index);
+    if (!Number.isNaN(idx)) openObra(idx);
   });
 
   modalClose.addEventListener('click', dismissObra);
