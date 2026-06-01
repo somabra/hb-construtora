@@ -86,6 +86,18 @@ const localBusinessSchema = {
 
     <!-- JSON-LD LocalBusiness -->
     <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+
+    <!-- Hotjar Tracking Code for HB Construtora -->
+    <script is:inline>
+      (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:6722648,hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+      })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
   </head>
   <body class="bg-surface text-on-surface font-body selection:bg-secondary-container selection:text-white">
     <slot />
