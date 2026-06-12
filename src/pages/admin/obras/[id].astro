@@ -76,7 +76,7 @@ const saved = Astro.url.searchParams.get('saved');
 
     <div class="bg-gray-50 rounded-lg p-4 mb-6 space-y-4">
       <p class="text-sm font-semibold text-gray-700">Adicionar fotos (até 4 por vez)</p>
-      <MultiImageUploader count={4} obraId={obra.id} folder={`obras/${obra.id}`} storagePublicUrl={STORAGE_URL} client:load />
+      <MultiImageUploader obraId={obra.id} folder={`obras/${obra.id}`} client:load />
     </div>
 
     {fotos && fotos.length > 0 ? (
