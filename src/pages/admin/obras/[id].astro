@@ -73,21 +73,25 @@ const saved = Astro.url.searchParams.get('saved');
   <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6">
     <h3 class="font-bold text-primary text-lg mb-4">Fotos da obra ({fotos?.length ?? 0})</h3>
 
-    <form method="POST" action="/api/admin/obra-fotos" class="bg-gray-50 rounded-lg p-4 mb-6 space-y-3">
+    <form method="POST" action="/api/admin/obra-fotos" class="bg-gray-50 rounded-lg p-4 mb-6 space-y-4">
       <input type="hidden" name="_action" value="add" />
       <input type="hidden" name="obra_id" value={obra.id} />
 
-      <p class="text-sm font-semibold text-gray-700">Adicionar nova foto</p>
-      <ImageUploader name="path" folder={`obras/${obra.id}`} storagePublicUrl={STORAGE_URL} client:load />
+      <p class="text-sm font-semibold text-gray-700">Adicionar fotos (até 3 por vez)</p>
 
-      <div>
-        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1.5">Descrição (alt)</label>
-        <input name="alt" type="text" placeholder="Ex: Vista frontal da obra" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-orange" />
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[0, 1, 2].map((i) => (
+          <div class="space-y-2">
+            <p class="text-xs text-gray-500 font-medium">Foto {i + 1}</p>
+            <ImageUploader name={`path_${i}`} folder={`obras/${obra.id}`} storagePublicUrl={STORAGE_URL} client:load />
+            <input name={`alt_${i}`} type="text" placeholder="Descrição (opcional)" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-orange" />
+          </div>
+        ))}
       </div>
 
       <div class="text-right">
         <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-125">
-          Adicionar foto
+          Adicionar fotos
         </button>
       </div>
     </form>
