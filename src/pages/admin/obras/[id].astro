@@ -77,10 +77,10 @@ const saved = Astro.url.searchParams.get('saved');
       <input type="hidden" name="_action" value="add" />
       <input type="hidden" name="obra_id" value={obra.id} />
 
-      <p class="text-sm font-semibold text-gray-700">Adicionar fotos (até 3 por vez)</p>
+      <p class="text-sm font-semibold text-gray-700">Adicionar fotos (até 4 por vez)</p>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[0, 1, 2].map((i) => (
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {[0, 1, 2, 3].map((i) => (
           <div class="space-y-2">
             <p class="text-xs text-gray-500 font-medium">Foto {i + 1}</p>
             <ImageUploader name={`path_${i}`} folder={`obras/${obra.id}`} storagePublicUrl={STORAGE_URL} client:load />

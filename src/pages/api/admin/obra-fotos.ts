@@ -15,7 +15,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const inserts: { obra_id: string; path: string; alt: string | null; position: number }[] = [];
     const { data: max } = await sb.from('obra_fotos').select('position').eq('obra_id', obraId).order('position', { ascending: false }).limit(1).maybeSingle();
     let pos = (max?.position ?? -1) + 1;
-    for (let i = 0; i <= 2; i++) {
+    for (let i = 0; i <= 3; i++) {
       const path = String(form.get(`path_${i}`) ?? '').trim();
       const alt  = String(form.get(`alt_${i}`) ?? '').trim() || null;
       if (path) inserts.push({ obra_id: obraId, path, alt, position: pos++ });
