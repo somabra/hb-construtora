@@ -9,6 +9,7 @@ interface SlotState {
 
 interface Props {
   count: number;
+  obraId: string;
   folder: string;
   storagePublicUrl: string;
 }
@@ -19,10 +20,11 @@ function resolve(path: string, base: string): string {
   return base + path;
 }
 
-export default function MultiImageUploader({ count, folder, storagePublicUrl }: Props) {
+export default function MultiImageUploader({ count, obraId, folder, storagePublicUrl }: Props) {
   const [slots, setSlots] = useState<SlotState[]>(() =>
     Array.from({ length: count }, () => ({ path: '', busy: false, error: null }))
   );
+  const [saving, setSaving] = useState(false);
 
   function updateSlot(i: number, update: Partial<SlotState>) {
     setSlots(prev => prev.map((s, idx) => idx === i ? { ...s, ...update } : s));
@@ -53,51 +55,77 @@ export default function MultiImageUploader({ count, folder, storagePublicUrl }: 
     }
   }
 
+  async function handleSave() {
+    const toSave = slots.filter(s => s.path);
+    if (toSave.length === 0) return;
+    setSaving(true);
+    try {
+      const fd = new FormData();
+      fd.set('_action', 'add');
+      fd.set('obra_id', obraId);
+      toSave.forEach((s, i) => {
+        fd.set(`path_${i}`, s.path);
+      });
+      await fetch('/api/admin/obra-fotos', { method: 'POST', body: fd });
+      window.location.href = `/admin/obras/${obraId}?saved=1`;
+    } catch {
+      setSaving(false);
+    }
+  }
+
+  const anyReady = slots.some(s => s.path);
+  const anyBusy = slots.some(s => s.busy);
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-      {slots.map((slot, i) => {
-        const previewUrl = resolve(slot.path, storagePublicUrl);
-        return (
-          <div key={i} className="space-y-2">
-            <p className="text-xs text-gray-500 font-medium">Foto {i + 1}</p>
-            <input type="hidden" name={`path_${i}`} value={slot.path} />
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {slots.map((slot, i) => {
+          const previewUrl = resolve(slot.path, storagePublicUrl);
+          return (
+            <div key={i} className="space-y-2">
+              <p className="text-xs text-gray-500 font-medium">Foto {i + 1}</p>
 
-            {previewUrl ? (
-              <div className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                <img src={previewUrl} alt="" className="w-full h-full object-cover" />
-                <button
-                  type="button"
-                  onClick={() => updateSlot(i, { path: '' })}
-                  className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-sm leading-none"
-                  aria-label="Remover"
-                >×</button>
-              </div>
-            ) : (
-              <div className="aspect-square rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center text-gray-300 text-3xl">+</div>
-            )}
+              {previewUrl ? (
+                <div className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                  <img src={previewUrl} alt="" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => updateSlot(i, { path: '' })}
+                    className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-sm leading-none"
+                    aria-label="Remover"
+                  >×</button>
+                </div>
+              ) : (
+                <div className="aspect-square rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center text-gray-300 text-3xl">+</div>
+              )}
 
-            <label className="flex items-center justify-center gap-1 bg-gray-100 hover:bg-gray-200 px-2 py-1.5 rounded-lg text-xs font-semibold text-gray-700 cursor-pointer transition-colors w-full">
-              {slot.busy ? 'Enviando…' : previewUrl ? 'Trocar' : 'Escolher'}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => onPick(i, e)}
-                disabled={slot.busy}
-              />
-            </label>
+              <label className="flex items-center justify-center gap-1 bg-gray-100 hover:bg-gray-200 px-2 py-1.5 rounded-lg text-xs font-semibold text-gray-700 cursor-pointer transition-colors w-full">
+                {slot.busy ? 'Enviando…' : previewUrl ? 'Trocar' : 'Escolher'}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => onPick(i, e)}
+                  disabled={slot.busy || saving}
+                />
+              </label>
 
-            <input
-              name={`alt_${i}`}
-              type="text"
-              placeholder="Descrição (opcional)"
-              className="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-brand-orange"
-            />
+              {slot.error && <p className="text-xs text-red-600">{slot.error}</p>}
+            </div>
+          );
+        })}
+      </div>
 
-            {slot.error && <p className="text-xs text-red-600">{slot.error}</p>}
-          </div>
-        );
-      })}
+      <div className="text-right">
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={!anyReady || anyBusy || saving}
+          className="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-125 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+        >
+          {saving ? 'Salvando…' : 'Adicionar fotos'}
+        </button>
+      </div>
     </div>
   );
 }

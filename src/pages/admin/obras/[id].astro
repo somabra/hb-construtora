@@ -74,19 +74,10 @@ const saved = Astro.url.searchParams.get('saved');
   <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6">
     <h3 class="font-bold text-primary text-lg mb-4">Fotos da obra ({fotos?.length ?? 0})</h3>
 
-    <form method="POST" action="/api/admin/obra-fotos" class="bg-gray-50 rounded-lg p-4 mb-6 space-y-4">
-      <input type="hidden" name="_action" value="add" />
-      <input type="hidden" name="obra_id" value={obra.id} />
-
+    <div class="bg-gray-50 rounded-lg p-4 mb-6 space-y-4">
       <p class="text-sm font-semibold text-gray-700">Adicionar fotos (até 4 por vez)</p>
-      <MultiImageUploader count={4} folder={`obras/${obra.id}`} storagePublicUrl={STORAGE_URL} client:load />
-
-      <div class="text-right">
-        <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-125">
-          Adicionar fotos
-        </button>
-      </div>
-    </form>
+      <MultiImageUploader count={4} obraId={obra.id} folder={`obras/${obra.id}`} storagePublicUrl={STORAGE_URL} client:load />
+    </div>
 
     {fotos && fotos.length > 0 ? (
       <ul class="grid grid-cols-2 md:grid-cols-3 gap-3">
