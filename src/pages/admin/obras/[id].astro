@@ -2,6 +2,7 @@
 export const prerender = false;
 import AdminLayout from '../../../layouts/AdminLayout.astro';
 import ImageUploader from '../../../components/admin/ImageUploader.tsx';
+import MultiImageUploader from '../../../components/admin/MultiImageUploader.tsx';
 import { resolveImg } from '../../../lib/site-content';
 
 const supabase = Astro.locals.supabase!;
@@ -78,16 +79,7 @@ const saved = Astro.url.searchParams.get('saved');
       <input type="hidden" name="obra_id" value={obra.id} />
 
       <p class="text-sm font-semibold text-gray-700">Adicionar fotos (até 4 por vez)</p>
-
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {[0, 1, 2, 3].map((i) => (
-          <div class="space-y-2">
-            <p class="text-xs text-gray-500 font-medium">Foto {i + 1}</p>
-            <ImageUploader name={`path_${i}`} folder={`obras/${obra.id}`} storagePublicUrl={STORAGE_URL} client:load />
-            <input name={`alt_${i}`} type="text" placeholder="Descrição (opcional)" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-orange" />
-          </div>
-        ))}
-      </div>
+      <MultiImageUploader count={4} folder={`obras/${obra.id}`} storagePublicUrl={STORAGE_URL} client:load />
 
       <div class="text-right">
         <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:brightness-125">
