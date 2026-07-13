@@ -1,16 +1,22 @@
 import { supabase } from './supabase';
 
-const STORAGE_URL = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public/site-media/`;
+// CDN Bunny.net na frente do Storage do Supabase (acelera as imagens públicas).
+const CDN_URL = 'https://somabrasupabase.b-cdn.net';
+const STORAGE_URL = `${CDN_URL}/storage/v1/object/public/site-media/`;
+const STORAGE_ORIGIN = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public`;
 
 /**
- * Resolve um path de imagem pra URL final:
- * - http(s)://...     → mantém
- * - /caminho/local    → mantém (arquivo em public/)
- * - resto             → trata como path no Storage Supabase
+ * Resolve um path de imagem pra URL final (sempre via CDN quando for do Storage):
+ * - http(s)://... do nosso Storage → reescreve o host pra CDN
+ * - http(s)://... externo          → mantém
+ * - /caminho/local                 → mantém (arquivo em public/)
+ * - resto                          → trata como path no Storage, já via CDN
  */
 export function resolveImg(path?: string | null): string {
   if (!path) return '';
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path.replace(STORAGE_ORIGIN, `${CDN_URL}/storage/v1/object/public`);
+  }
   if (path.startsWith('/')) return path;
   return STORAGE_URL + path;
 }
