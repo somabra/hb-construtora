@@ -1,5 +1,5 @@
 ---
-import { getSetting } from '../lib/site-content';
+import { getSetting, asset } from '../lib/site-content';
 import { sanitizeRichText } from '../lib/sanitize';
 const TURNSTILE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 const wa = (await getSetting<{ numero: string; mensagem_default: string }>('whatsapp')) ?? { numero: '5566996752309', mensagem_default: '' };
@@ -12,8 +12,8 @@ const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { ti
     <video
       id="contato-video"
       class="absolute inset-0 w-full h-full object-cover"
-      src="/contato/contato-bg.mp4"
-      poster="/contato/contato-bg.webp"
+      src={asset('/contato/contato-bg.mp4')}
+      poster={asset('/contato/contato-bg.webp')}
       autoplay
       muted
       loop

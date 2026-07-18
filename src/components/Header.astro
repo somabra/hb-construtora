@@ -1,4 +1,6 @@
 ---
+import { asset } from '../lib/site-content';
+
 const links = [
   { href: '#home',     label: 'Home' },
   { href: '#servicos', label: 'Serviços' },
@@ -12,7 +14,7 @@ const links = [
   <div class="flex justify-between items-center px-8 py-1 max-w-full">
 
     <a href="#home" class="flex items-center" aria-label="HB Construtora — Ir para o topo">
-      <img src="/logo-hb-branco.webp" alt="HB Construtora" class="h-14 md:h-16 w-auto" />
+      <img src={asset('/logo-hb-branco.webp')} alt="HB Construtora" class="h-14 md:h-16 w-auto" />
     </a>
 
     <!-- Desktop nav -->

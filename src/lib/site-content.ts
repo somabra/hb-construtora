@@ -5,11 +5,23 @@ const CDN_URL = 'https://somabrasupabase.b-cdn.net';
 const STORAGE_URL = `${CDN_URL}/storage/v1/object/public/site-media/`;
 const STORAGE_ORIGIN = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public`;
 
+// CDN Bunny.net na frente do próprio site (pull zone com origin no VPS).
+// Serve os arquivos de public/ — imagens da galeria, vídeos, logo.
+const SITE_CDN = 'https://hb-construtora.b-cdn.net';
+
 /**
- * Resolve um path de imagem pra URL final (sempre via CDN quando for do Storage):
- * - http(s)://... do nosso Storage → reescreve o host pra CDN
+ * Prefixa um asset de public/ com a CDN do site.
+ * Usar no site público; no admin não vale a pena (e evita cache em tela interna).
+ */
+export function asset(path: string): string {
+  return SITE_CDN + path;
+}
+
+/**
+ * Resolve um path de imagem pra URL final (sempre via CDN):
+ * - http(s)://... do nosso Storage → reescreve o host pra CDN do Storage
  * - http(s)://... externo          → mantém
- * - /caminho/local                 → mantém (arquivo em public/)
+ * - /caminho/local                 → CDN do site (arquivo em public/)
  * - resto                          → trata como path no Storage, já via CDN
  */
 export function resolveImg(path?: string | null): string {
@@ -17,7 +29,7 @@ export function resolveImg(path?: string | null): string {
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path.replace(STORAGE_ORIGIN, `${CDN_URL}/storage/v1/object/public`);
   }
-  if (path.startsWith('/')) return path;
+  if (path.startsWith('/')) return asset(path);
   return STORAGE_URL + path;
 }
 

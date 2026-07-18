@@ -1,5 +1,5 @@
 ---
-import { getSetting } from '../lib/site-content';
+import { getSetting, asset } from '../lib/site-content';
 import WhatsappIcon from './WhatsappIcon.astro';
 
 interface Stat { prefix: string; target: number; suffix: string; label: string; }
@@ -28,7 +28,7 @@ const waHrefSobre = `https://wa.me/${wa.numero}?text=${encodeURIComponent(waMsgS
         <h2 class="font-headline text-4xl md:text-6xl font-bold text-primary mb-6 leading-tight">{sobre.titulo}</h2>
 
         <img
-          src="/sobre/hemerson-retrato.webp"
+          src={asset('/sobre/hemerson-retrato.webp')}
           alt="Hemerson Borges, fundador da HB Construtora"
           class="lg:hidden w-full h-auto block max-w-[200px] mx-auto select-none pointer-events-none [-webkit-user-drag:none]"
           loading="lazy"
@@ -67,7 +67,7 @@ const waHrefSobre = `https://wa.me/${wa.numero}?text=${encodeURIComponent(waMsgS
       <div class="hidden lg:block lg:self-end">
         <div class="relative w-full max-w-[300px] mx-auto">
           <img
-            src="/sobre/hemerson-retrato.webp"
+            src={asset('/sobre/hemerson-retrato.webp')}
             alt="Hemerson Borges, fundador da HB Construtora"
             class="w-full h-auto block select-none pointer-events-none [-webkit-user-drag:none]"
             loading="lazy"
