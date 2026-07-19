@@ -5,16 +5,15 @@ const CDN_URL = 'https://somabrasupabase.b-cdn.net';
 const STORAGE_URL = `${CDN_URL}/storage/v1/object/public/site-media/`;
 const STORAGE_ORIGIN = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public`;
 
-// CDN Bunny.net na frente do próprio site (pull zone com origin no VPS).
-// Serve os arquivos de public/ — imagens da galeria, vídeos, logo.
-const SITE_CDN = 'https://hb-construtora.b-cdn.net';
-
 /**
- * Prefixa um asset de public/ com a CDN do site.
- * Usar no site público; no admin não vale a pena (e evita cache em tela interna).
+ * Prefixa um asset "seed" com a CDN do Storage.
+ * Os arquivos de public/ foram copiados pro bucket site-media (espelhando as pastas):
+ * o origin Node standalone truncava ~13% das transferências pra CDN, enquanto o
+ * Storage do Supabase serve o MESMO path com 0% de falha atrás da mesma Bunny.
+ * (A antiga pull zone hb-construtora.b-cdn.net, com origin no Node, foi abandonada.)
  */
 export function asset(path: string): string {
-  return SITE_CDN + path;
+  return STORAGE_URL + path.replace(/^\//, '');
 }
 
 /**
