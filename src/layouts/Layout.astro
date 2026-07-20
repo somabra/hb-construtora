@@ -109,6 +109,17 @@ const localBusinessSchema = {
   </head>
   <body class="bg-surface text-on-surface font-body selection:bg-secondary-container selection:text-white">
     <slot />
+    <!-- Vídeos de fundo decorativos só carregam no desktop. No mobile eles nem
+         recebem src (autoplay ignora preload=none e baixaria ~1,4MB à toa). -->
+    <script is:inline>
+      if (window.matchMedia('(min-width: 768px)').matches) {
+        document.querySelectorAll('video[data-bgvideo]').forEach(function (v) {
+          v.src = v.getAttribute('data-bgvideo');
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        });
+      }
+    </script>
     <script>
       import '../scripts/highlight-brush.ts';
     </script>

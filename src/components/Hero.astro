@@ -33,8 +33,7 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
          Desktop: vídeo decorativo + overlay por cima. -->
     <video
       class="hidden md:block absolute inset-0 w-full h-full object-cover"
-      src={asset('/contato/contato-bg.mp4')}
-      autoplay
+      data-bgvideo={asset('/contato/contato-bg.mp4')}
       muted
       loop
       playsinline
