@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { asset } from '../lib/site-content';
 
 interface Props {
   title?: string;
@@ -18,6 +19,9 @@ const {
 const siteUrl = 'https://hb-construtora.vercel.app';
 const canonical = new URL(Astro.url.pathname, siteUrl).toString();
 const ogImageUrl = new URL(ogImage, siteUrl).toString();
+
+// Só a home tem o Hero — preload do poster do vídeo (elemento LCP) só faz sentido lá.
+const isHome = Astro.url.pathname === '/';
 
 const localBusinessSchema = {
   '@context': 'https://schema.org',
@@ -76,13 +80,14 @@ const localBusinessSchema = {
     <meta name="theme-color" content="#020037" />
     <link rel="icon" type="image/png" href="/logo-hb.webp" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;800&family=Public+Sans:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts self-hosted (definidas em global.css) — preload evita FOUT/CLS -->
+    <link rel="preload" href="/fonts/work-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/public-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    {isHome && (
+      <!-- Poster do vídeo do Hero é o maior elemento acima da dobra (LCP) -->
+      <link rel="preload" as="image" href={asset('/hero/hero-thumb.webp')} fetchpriority="high" />
+    )}
 
     <!-- JSON-LD LocalBusiness -->
     <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />

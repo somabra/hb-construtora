@@ -9,4 +9,7 @@ export default defineConfig({
   adapter: node({ mode: 'standalone' }),
   integrations: [tailwind(), react()],
   devToolbar: { enabled: false },
+  // Inlina o CSS no HTML em vez de <link> externo — corta o render-blocking
+  // dos CSS de componente (ex.: os dois faq.css que atrasavam a primeira pintura).
+  build: { inlineStylesheets: 'always' },
 });

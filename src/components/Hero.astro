@@ -27,15 +27,23 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
 <section id="home" class="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">
 
   <div class="absolute inset-0 overflow-hidden">
+    <!-- Fundo decorativo (fica 85% coberto pelo overlay): no mobile é só a imagem
+         para poupar ~1,4MB de banda/CPU no 4G; o vídeo roda apenas no desktop. -->
+    <img
+      src={asset('/contato/contato-bg.webp')}
+      alt=""
+      class="md:hidden absolute inset-0 w-full h-full object-cover"
+      aria-hidden="true"
+    />
     <video
-      class="absolute inset-0 w-full h-full object-cover"
+      class="hidden md:block absolute inset-0 w-full h-full object-cover"
       src={asset('/contato/contato-bg.mp4')}
       poster={asset('/contato/contato-bg.webp')}
       autoplay
       muted
       loop
       playsinline
-      preload="metadata"
+      preload="none"
       aria-hidden="true"
     ></video>
     <div class="absolute inset-0 bg-primary/85"></div>
@@ -76,7 +84,7 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
                 controls
                 playsinline
                 muted
-                preload="metadata"
+                preload="none"
               ></video>
               <button
                 id="hero-video-unmute"
