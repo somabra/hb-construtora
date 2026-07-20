@@ -76,12 +76,24 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
                 id="hero-video"
                 class="absolute inset-0 w-full h-full object-cover"
                 src={mp4Src}
-                poster={asset('/hero/hero-thumb.webp')}
                 controls
                 playsinline
                 muted
                 preload="none"
               ></video>
+              <!-- Poster como <img> real (em vez de poster do <video>): uma imagem
+                   pinta imediatamente e vira o elemento LCP. O poster nativo do
+                   <video> tinha ~1,66s de "render delay". Some quando o vídeo toca. -->
+              <img
+                id="hero-poster"
+                src={asset('/hero/hero-thumb.webp')}
+                alt="Vídeo institucional da HB Construtora"
+                width="360"
+                height="640"
+                fetchpriority="high"
+                decoding="async"
+                class="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-500"
+              />
               <button
                 id="hero-video-unmute"
                 type="button"
@@ -172,7 +184,14 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
       var video = document.getElementById('hero-video');
       var modal = document.getElementById('hero-video-modal');
       var unmuteBtn = document.getElementById('hero-video-unmute');
+      var poster = document.getElementById('hero-poster');
       if (!video || !modal) return;
+
+      // O poster é uma <img> por cima do vídeo (pra pintar rápido = LCP baixo).
+      // Some assim que o vídeo passa a exibir frames.
+      if (poster) {
+        video.addEventListener('playing', function () { poster.style.opacity = '0'; });
+      }
 
       function openModal() {
         modal.classList.remove('hidden');
