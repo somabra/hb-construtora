@@ -56,6 +56,9 @@ const localBusinessSchema = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Abre a conexão com a CDN cedo: imagens (poster do LCP, logo) saem dela -->
+    <link rel="preconnect" href="https://somabrasupabase.b-cdn.net" />
+    <link rel="dns-prefetch" href="https://somabrasupabase.b-cdn.net" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />

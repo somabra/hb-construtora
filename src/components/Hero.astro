@@ -26,15 +26,11 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
 
 <section id="home" class="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">
 
-  <div class="absolute inset-0 overflow-hidden">
-    <!-- Fundo decorativo (fica 85% coberto pelo overlay): no mobile é só a imagem
-         para poupar ~1,4MB de banda/CPU no 4G; o vídeo roda apenas no desktop. -->
-    <img
-      src={asset('/contato/contato-bg.webp')}
-      alt=""
-      class="md:hidden absolute inset-0 w-full h-full object-cover"
-      aria-hidden="true"
-    />
+  <div class="absolute inset-0 overflow-hidden bg-primary">
+    <!-- Mobile: fundo é só a cor sólida (bg-primary do container). O fundo fica 85%
+         coberto pelo overlay de qualquer jeito, então dispensamos a imagem — poupa
+         ~200KB e tira um elemento tela-cheia que disputava o LCP no 4G.
+         Desktop: vídeo decorativo + overlay por cima. -->
     <video
       class="hidden md:block absolute inset-0 w-full h-full object-cover"
       src={asset('/contato/contato-bg.mp4')}
@@ -46,7 +42,7 @@ const mp4Src = isMp4 ? resolveImg(raw) : '';
       preload="none"
       aria-hidden="true"
     ></video>
-    <div class="absolute inset-0 bg-primary/85"></div>
+    <div class="hidden md:block absolute inset-0 bg-primary/85"></div>
   </div>
 
   <div class="relative max-w-6xl mx-auto px-6 md:px-10">
