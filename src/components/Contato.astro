@@ -8,20 +8,23 @@ const card = (await getSetting<{ titulo_html: string }>('contato_card')) ?? { ti
 
 <section id="contato-section" class="relative overflow-hidden py-20 md:py-28 rounded-t-3xl -mt-8 z-10">
 
-  <div class="absolute inset-0 overflow-hidden">
+  <div class="absolute inset-0 overflow-hidden bg-primary">
+    <!-- Mesmo tratamento do hero: no mobile fica só a cor sólida (o fundo é 80%
+         coberto pelo overlay); o vídeo roda só no desktop e com preload=none, pra
+         não baixar durante o carregamento inicial e disputar banda com o LCP no 4G. -->
     <video
       id="contato-video"
-      class="absolute inset-0 w-full h-full object-cover"
+      class="hidden md:block absolute inset-0 w-full h-full object-cover"
       src={asset('/contato/contato-bg.mp4')}
       poster={asset('/contato/contato-bg.webp')}
       autoplay
       muted
       loop
       playsinline
-      preload="metadata"
+      preload="none"
       aria-hidden="true"
     ></video>
-    <div class="absolute inset-0 bg-primary/80"></div>
+    <div class="hidden md:block absolute inset-0 bg-primary/80"></div>
   </div>
 
   <div class="relative max-w-4xl mx-auto px-6 md:px-10">
